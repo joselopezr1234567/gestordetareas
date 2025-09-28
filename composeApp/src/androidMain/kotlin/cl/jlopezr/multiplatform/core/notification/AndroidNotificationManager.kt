@@ -14,6 +14,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import cl.jlopezr.multiplatform.core.notification.NotificationManager
+import cl.jlopezr.multiplatform.core.alarm.AlarmReceiver
 
 class AndroidNotificationManager(
     private val context: Context
@@ -48,10 +49,10 @@ class AndroidNotificationManager(
                 return Result.failure(SecurityException("Las notificaciones no están habilitadas"))
             }
             
-            val intent = Intent(context, NotificationReceiver::class.java).apply {
-                putExtra("notification_id", id)
-                putExtra("title", title)
-                putExtra("message", message)
+            val intent = Intent(context, AlarmReceiver::class.java).apply {
+                putExtra(AlarmReceiver.EXTRA_TASK_ID, id)
+                putExtra(AlarmReceiver.EXTRA_TASK_TITLE, title)
+                putExtra(AlarmReceiver.EXTRA_TASK_MESSAGE, message)
             }
             
             val pendingIntent = PendingIntent.getBroadcast(
@@ -98,7 +99,7 @@ class AndroidNotificationManager(
     
     override suspend fun cancelNotification(id: String): Result<Unit> {
         return try {
-            val intent = Intent(context, NotificationReceiver::class.java)
+            val intent = Intent(context, AlarmReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
                 id.hashCode(),
@@ -108,6 +109,9 @@ class AndroidNotificationManager(
             
             alarmManager.cancel(pendingIntent)
             notificationManager.cancel(id.hashCode())
+            
+            // También detener el servicio de alarma si está activo
+            cl.jlopezr.multiplatform.core.alarm.AlarmService.stopAlarm(context)
             
             Result.success(Unit)
         } catch (e: Exception) {

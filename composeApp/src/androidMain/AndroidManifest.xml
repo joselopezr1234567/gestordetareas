@@ -5,6 +5,13 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    
+    <!-- Permisos para alarmas -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:allowBackup="true"
@@ -28,6 +35,28 @@
             android:name="cl.jlopezr.multiplatform.core.notification.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
+            
+        <!-- Receptor para alarmas -->
+        <receiver
+            android:name="cl.jlopezr.multiplatform.core.alarm.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
+            
+        <!-- Servicio de alarma -->
+        <service
+            android:name="cl.jlopezr.multiplatform.core.alarm.AlarmService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+            
+        <!-- Actividad de alarma -->
+        <activity
+            android:name="cl.jlopezr.multiplatform.core.alarm.AlarmActivity"
+            android:enabled="true"
+            android:exported="false"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" />
     </application>
 
 </manifest>
