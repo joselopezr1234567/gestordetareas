@@ -46,8 +46,6 @@ class TaskFormViewModel(
             is TaskFormUiEvent.ValidateForm -> validateForm()
             is TaskFormUiEvent.ShowDatePicker -> showDatePicker()
             is TaskFormUiEvent.HideDatePicker -> hideDatePicker()
-            is TaskFormUiEvent.ShowTimePicker -> showTimePicker()
-            is TaskFormUiEvent.HideTimePicker -> hideTimePicker()
             is TaskFormUiEvent.ShowPriorityDialog -> showPriorityDialog()
             is TaskFormUiEvent.HidePriorityDialog -> hidePriorityDialog()
             is TaskFormUiEvent.ShowDiscardDialog -> showDiscardDialog()
@@ -126,7 +124,7 @@ class TaskFormViewModel(
      * Actualiza la fecha y hora del recordatorio y valida
      */
     private fun updateReminderDateTime(dateTime: LocalDateTime?) {
-        uiState = uiState.copy(reminderDateTime = dateTime, reminderError = null, showTimePicker = false)
+        uiState = uiState.copy(reminderDateTime = dateTime, reminderError = null)
         validateReminder()
     }
     
@@ -214,20 +212,6 @@ class TaskFormViewModel(
      */
     private fun hideDatePicker() {
         uiState = uiState.copy(showDatePicker = false)
-    }
-    
-    /**
-     * Muestra el selector de hora
-     */
-    private fun showTimePicker() {
-        uiState = uiState.copy(showTimePicker = true)
-    }
-    
-    /**
-     * Oculta el selector de hora
-     */
-    private fun hideTimePicker() {
-        uiState = uiState.copy(showTimePicker = false)
     }
     
     /**

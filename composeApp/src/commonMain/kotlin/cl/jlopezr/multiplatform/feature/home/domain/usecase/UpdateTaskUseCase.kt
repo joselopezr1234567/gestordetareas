@@ -2,6 +2,8 @@ package cl.jlopezr.multiplatform.feature.home.domain.usecase
 
 import cl.jlopezr.multiplatform.feature.home.domain.model.Task
 import cl.jlopezr.multiplatform.feature.home.domain.repository.TaskRepository
+import cl.jlopezr.multiplatform.core.notification.NotificationManager
+import cl.jlopezr.multiplatform.core.notification.NotificationManagerFactory
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -13,6 +15,9 @@ import kotlinx.datetime.toLocalDateTime
 class UpdateTaskUseCase(
     private val repository: TaskRepository
 ) {
+    private val notificationManager: NotificationManager by lazy {
+        NotificationManagerFactory.create()
+    }
     
     /**
      * Ejecuta el caso de uso para actualizar una tarea
@@ -66,6 +71,24 @@ class UpdateTaskUseCase(
             }
         )
         
-        return repository.updateTask(updatedTask)
+        val result = repository.updateTask(updatedTask)
+        
+        // Gestionar notificaciones
+        if (result.isSuccess) {
+            // Cancelar notificación anterior si existía
+            notificationManager.cancelNotification(task.id)
+            
+            // Programar nueva notificación si hay recordatorio y la tarea no está completada
+            if (updatedTask.reminderDateTime != null && !updatedTask.isCompleted) {
+                notificationManager.scheduleNotification(
+                    id = updatedTask.id,
+                    title = "Recordatorio de tarea",
+                    message = updatedTask.title,
+                    dateTime = updatedTask.reminderDateTime
+                )
+            }
+        }
+        
+        return result
     }
 }

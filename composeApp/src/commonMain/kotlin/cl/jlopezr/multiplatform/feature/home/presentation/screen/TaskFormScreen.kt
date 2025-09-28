@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -207,7 +208,7 @@ fun TaskFormScreen(
                     }
                 }
                 
-                // Fecha de vencimiento
+                // Fecha de vencimiento con hora
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -247,7 +248,11 @@ fun TaskFormScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = uiState.dueDate?.toString() ?: "Seleccionar fecha"
+                                text = if (uiState.dueDate != null) {
+                                    "${uiState.dueDate!!.date} - ${String.format("%02d:%02d", uiState.dueDate!!.hour, uiState.dueDate!!.minute)}"
+                                } else {
+                                    "Seleccionar fecha y hora"
+                                }
                             )
                         }
                         
@@ -259,60 +264,53 @@ fun TaskFormScreen(
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
-                    }
-                }
-                
-                // Recordatorio
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Recordatorio",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Medium
-                            )
+                        
+                        // Switch para recordatorio
+                        if (uiState.dueDate != null) {
+                            Spacer(modifier = Modifier.height(16.dp))
                             
-                            if (uiState.reminderDateTime != null) {
-                                TextButton(
-                                    onClick = { viewModel.onEvent(TaskFormUiEvent.ClearReminder) }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    modifier = Modifier.weight(1f)
                                 ) {
-                                    Text("Quitar")
+                                    Text(
+                                        text = "Programar recordatorio",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    Text(
+                                        text = "Recibir notificación en la fecha y hora seleccionada",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                 }
+                                
+                                Switch(
+                                    checked = uiState.reminderDateTime != null,
+                                    onCheckedChange = { enabled ->
+                                        if (enabled) {
+                                            // Activar recordatorio con la misma fecha y hora de vencimiento
+                                            viewModel.onEvent(TaskFormUiEvent.ReminderDateTimeChanged(uiState.dueDate))
+                                        } else {
+                                            // Desactivar recordatorio
+                                            viewModel.onEvent(TaskFormUiEvent.ClearReminder)
+                                        }
+                                    }
+                                )
                             }
-                        }
-                        
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        OutlinedButton(
-                            onClick = { viewModel.onEvent(TaskFormUiEvent.ShowTimePicker) },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Notifications,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = uiState.reminderDateTime?.toString() ?: "Seleccionar fecha y hora"
-                            )
-                        }
-                        
-                        uiState.reminderError?.let { error ->
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = error,
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                            
+                            uiState.reminderError?.let { error ->
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = error,
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                         }
                     }
                 }
@@ -350,26 +348,14 @@ fun TaskFormScreen(
         
         // Diálogos
         if (uiState.showDatePicker) {
-            DatePickerDialog(
-                onDateSelected = { date ->
-                    viewModel.onEvent(TaskFormUiEvent.DueDateChanged(date))
+            TimePickerDialog(
+                onDateTimeSelected = { dateTime ->
+                    viewModel.onEvent(TaskFormUiEvent.DueDateChanged(dateTime))
                 },
                 onDismiss = {
                     viewModel.onEvent(TaskFormUiEvent.HideDatePicker)
                 },
-                initialDate = uiState.dueDate
-            )
-        }
-        
-        if (uiState.showTimePicker) {
-            TimePickerDialog(
-                onDateTimeSelected = { dateTime ->
-                    viewModel.onEvent(TaskFormUiEvent.ReminderDateTimeChanged(dateTime))
-                },
-                onDismiss = {
-                    viewModel.onEvent(TaskFormUiEvent.HideTimePicker)
-                },
-                initialDateTime = uiState.reminderDateTime
+                initialDateTime = uiState.dueDate
             )
         }
     }

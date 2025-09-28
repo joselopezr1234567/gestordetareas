@@ -30,8 +30,6 @@ sealed class TaskFormUiEvent {
     // Eventos de diálogos
     data object ShowDatePicker : TaskFormUiEvent()
     data object HideDatePicker : TaskFormUiEvent()
-    data object ShowTimePicker : TaskFormUiEvent()
-    data object HideTimePicker : TaskFormUiEvent()
     data object ShowPriorityDialog : TaskFormUiEvent()
     data object HidePriorityDialog : TaskFormUiEvent()
     data object ShowDiscardDialog : TaskFormUiEvent()

@@ -1,6 +1,8 @@
 package cl.jlopezr.multiplatform.feature.home.domain.usecase
 
 import cl.jlopezr.multiplatform.feature.home.domain.repository.TaskRepository
+import cl.jlopezr.multiplatform.core.notification.NotificationManager
+import cl.jlopezr.multiplatform.core.notification.NotificationManagerFactory
 
 /**
  * Caso de uso para eliminar una tarea
@@ -9,6 +11,9 @@ import cl.jlopezr.multiplatform.feature.home.domain.repository.TaskRepository
 class DeleteTaskUseCase(
     private val repository: TaskRepository
 ) {
+    private val notificationManager: NotificationManager by lazy {
+        NotificationManagerFactory.create()
+    }
     
     /**
      * Ejecuta el caso de uso para eliminar una tarea
@@ -27,6 +32,13 @@ class DeleteTaskUseCase(
         val existingTask = repository.getTaskById(taskId)
             ?: return Result.failure(IllegalArgumentException("La tarea no existe"))
         
-        return repository.deleteTask(taskId)
+        val result = repository.deleteTask(taskId)
+        
+        // Cancelar notificación si la eliminación fue exitosa
+        if (result.isSuccess) {
+            notificationManager.cancelNotification(taskId)
+        }
+        
+        return result
     }
 }

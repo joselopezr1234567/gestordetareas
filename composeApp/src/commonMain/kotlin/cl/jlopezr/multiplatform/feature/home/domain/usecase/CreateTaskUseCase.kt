@@ -3,6 +3,8 @@ package cl.jlopezr.multiplatform.feature.home.domain.usecase
 import cl.jlopezr.multiplatform.feature.home.domain.model.Task
 import cl.jlopezr.multiplatform.feature.home.domain.model.TaskPriority
 import cl.jlopezr.multiplatform.feature.home.domain.repository.TaskRepository
+import cl.jlopezr.multiplatform.core.notification.NotificationManager
+import cl.jlopezr.multiplatform.core.notification.NotificationManagerFactory
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -15,6 +17,9 @@ import kotlinx.datetime.toLocalDateTime
 class CreateTaskUseCase(
     private val repository: TaskRepository
 ) {
+    private val notificationManager: NotificationManager by lazy {
+        NotificationManagerFactory.create()
+    }
     
     /**
      * Ejecuta el caso de uso para crear una nueva tarea
@@ -73,7 +78,27 @@ class CreateTaskUseCase(
             reminderDateTime = reminderDateTime
         )
         
-        return repository.createTask(task)
+        val result = repository.createTask(task)
+        
+        // Programar notificación si hay recordatorio
+        if (result.isSuccess && reminderDateTime != null) {
+            println("CreateTaskUseCase: Programando notificación para tarea ${task.id} en $reminderDateTime")
+            val notificationResult = notificationManager.scheduleNotification(
+                id = task.id,
+                title = "Recordatorio de tarea",
+                message = task.title,
+                dateTime = reminderDateTime
+            )
+            if (notificationResult.isSuccess) {
+                println("CreateTaskUseCase: Notificación programada exitosamente")
+            } else {
+                println("CreateTaskUseCase: Error al programar notificación: ${notificationResult.exceptionOrNull()}")
+            }
+        } else {
+            println("CreateTaskUseCase: No se programó notificación - Success: ${result.isSuccess}, ReminderDateTime: $reminderDateTime")
+        }
+        
+        return result
     }
     
     /**
