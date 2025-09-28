@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.*
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import cl.jlopezr.multiplatform.core.theme.AgendaTareasTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +27,9 @@ import cl.jlopezr.multiplatform.feature.home.presentation.screen.TaskListScreen
 import cl.jlopezr.multiplatform.feature.home.presentation.screen.TaskFormScreen
 import cl.jlopezr.multiplatform.feature.settings.presentation.screen.SettingsScreen
 import cl.jlopezr.multiplatform.feature.statistics.presentation.screen.StatisticsScreen
+import cl.jlopezr.multiplatform.feature.drawer.ui.AppDrawer
+import cl.jlopezr.multiplatform.core.navigation.Screen
+import cl.jlopezr.multiplatform.core.navigation.NavigationState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
@@ -48,20 +53,94 @@ fun App() {
  * Navegación principal de la aplicación
  * Maneja la navegación entre todas las pantallas de la aplicación
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppNavigation() {
     var navigationState by remember { 
         mutableStateOf(NavigationState(currentScreen = Screen.Splash)) 
     }
     
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    
+    // Función para alternar el drawer
+    val toggleDrawer: () -> Unit = {
+        scope.launch {
+            if (drawerState.isClosed) {
+                drawerState.open()
+            } else {
+                drawerState.close()
+            }
+        }
+    }
+    
+    // Función para manejar navegación desde el drawer
+    val handleDrawerNavigation: (Screen) -> Unit = { screen ->
+        scope.launch {
+            drawerState.close()
+            navigationState = navigationState.copy(currentScreen = screen)
+        }
+    }
+    
+    // Función para manejar logout
+    val handleLogout: () -> Unit = {
+        scope.launch {
+            drawerState.close()
+            navigationState = navigationState.copy(currentScreen = Screen.Login)
+        }
+    }
+    
+    // Solo mostrar el drawer en pantallas que lo necesiten
+    val showDrawer = navigationState.currentScreen in listOf(
+        Screen.TaskList, 
+        Screen.Settings, 
+        Screen.Statistics
+    )
+    
+    if (showDrawer) {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                AppDrawer(
+                    currentScreen = navigationState.currentScreen,
+                    onNavigate = handleDrawerNavigation,
+                    onLogout = handleLogout
+                )
+            }
+        ) {
+            AppContent(
+                navigationState = navigationState,
+                onNavigationStateChange = { navigationState = it },
+                onToggleDrawer = toggleDrawer
+            )
+        }
+    } else {
+        AppContent(
+            navigationState = navigationState,
+            onNavigationStateChange = { navigationState = it },
+            onToggleDrawer = null
+        )
+    }
+}
+
+/**
+ * Contenido principal de la aplicación
+ */
+@Composable
+private fun AppContent(
+    navigationState: NavigationState,
+    onNavigationStateChange: (NavigationState) -> Unit,
+    onToggleDrawer: (() -> Unit)?
+) {
+    
     when (navigationState.currentScreen) {
         Screen.Splash -> {
             SplashScreen(
                 onNavigateToLogin = { 
-                    navigationState = navigationState.copy(currentScreen = Screen.Login) 
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.Login))
                 },
                 onNavigateToHome = { 
-                    navigationState = navigationState.copy(currentScreen = Screen.TaskList) 
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.TaskList))
                 }
             )
         }
@@ -69,7 +148,7 @@ private fun AppNavigation() {
         Screen.Login -> {
             LoginScreen(
                 onNavigateToHome = { 
-                    navigationState = navigationState.copy(currentScreen = Screen.TaskList) 
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.TaskList))
                 }
             )
         }
@@ -77,31 +156,32 @@ private fun AppNavigation() {
         Screen.TaskList -> {
             TaskListScreen(
                 onNavigateToCreateTask = {
-                    navigationState = navigationState.copy(
+                    onNavigationStateChange(navigationState.copy(
                         currentScreen = Screen.TaskForm,
                         taskId = null,
                         isEditMode = false
-                    )
+                    ))
                 },
                 onNavigateToEditTask = { taskId ->
-                    navigationState = navigationState.copy(
+                    onNavigationStateChange(navigationState.copy(
                         currentScreen = Screen.TaskForm,
                         taskId = taskId,
                         isEditMode = true
-                    )
+                    ))
                 },
                 onNavigateToTaskDetail = { taskId ->
-                    navigationState = navigationState.copy(
+                    onNavigationStateChange(navigationState.copy(
                         currentScreen = Screen.TaskDetail,
                         taskId = taskId
-                    )
+                    ))
                 },
                 onNavigateToLogin = {
-                    navigationState = navigationState.copy(currentScreen = Screen.Login)
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.Login))
                 },
                 onNavigateToSettings = {
-                    navigationState = navigationState.copy(currentScreen = Screen.Settings)
-                }
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.Settings))
+                },
+                onToggleDrawer = onToggleDrawer
             )
         }
         
@@ -109,11 +189,11 @@ private fun AppNavigation() {
             TaskFormScreen(
                 taskId = if (navigationState.isEditMode) navigationState.taskId else null,
                 onNavigateBack = {
-                    navigationState = navigationState.copy(
+                    onNavigationStateChange(navigationState.copy(
                         currentScreen = Screen.TaskList,
                         taskId = null,
                         isEditMode = false
-                    )
+                    ))
                 }
             )
         }
@@ -121,20 +201,20 @@ private fun AppNavigation() {
         Screen.TaskDetail -> {
             // Por ahora redirigimos a TaskList, se implementará en futuras iteraciones
             LaunchedEffect(Unit) {
-                navigationState = navigationState.copy(
+                onNavigationStateChange(navigationState.copy(
                     currentScreen = Screen.TaskList,
                     taskId = null
-                )
+                ))
             }
         }
         
         Screen.Settings -> {
             SettingsScreen(
                 onNavigateBack = {
-                    navigationState = navigationState.copy(currentScreen = Screen.TaskList)
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.TaskList))
                 },
                 onNavigateToStatistics = {
-                    navigationState = navigationState.copy(currentScreen = Screen.Statistics)
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.Statistics))
                 }
             )
         }
@@ -142,9 +222,16 @@ private fun AppNavigation() {
         Screen.Statistics -> {
             StatisticsScreen(
                 onNavigateBack = {
-                    navigationState = navigationState.copy(currentScreen = Screen.Settings)
+                    onNavigationStateChange(navigationState.copy(currentScreen = Screen.Settings))
                 }
             )
+        }
+        
+        Screen.Logout -> {
+            // El logout se maneja directamente en el drawer, redirigimos a Login
+            LaunchedEffect(Unit) {
+                onNavigationStateChange(navigationState.copy(currentScreen = Screen.Login))
+            }
         }
     }
 }
@@ -182,27 +269,3 @@ private fun LoginPlaceholderScreen(
         }
     }
 }
-
-
-
-/**
- * Enum para las pantallas de la aplicación
- */
-private enum class Screen {
-    Splash,
-    Login,
-    TaskList,
-    TaskForm,
-    TaskDetail,
-    Settings,
-    Statistics
-}
-
-/**
- * Data class para manejar parámetros de navegación
- */
-private data class NavigationState(
-    val currentScreen: Screen = Screen.Splash,
-    val taskId: String? = null,
-    val isEditMode: Boolean = false
-)

@@ -1,6 +1,7 @@
 package cl.jlopezr.multiplatform.di
 
 import cl.jlopezr.multiplatform.core.storage.DataStoreFactory
+import cl.jlopezr.multiplatform.core.storage.PreferencesManager
 import cl.jlopezr.multiplatform.feature.home.data.datasource.TaskLocalDataSource
 import cl.jlopezr.multiplatform.feature.home.data.repository.TaskRepositoryImpl
 import cl.jlopezr.multiplatform.feature.home.domain.repository.TaskRepository
@@ -18,6 +19,9 @@ val repositoryModule = module {
     
     // DataStore
     single { DataStoreFactory.createDataStore() }
+    
+    // PreferencesManager
+    single { PreferencesManager(dataStore = get()) }
     
     // Task Data Source
     single { TaskLocalDataSource(dataStore = get()) }

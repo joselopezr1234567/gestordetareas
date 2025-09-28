@@ -1,96 +1,153 @@
 package cl.jlopezr.multiplatform.core.storage
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+
 /**
- * Gestor de preferencias para almacenamiento local
+ * Gestor de preferencias para almacenamiento local usando DataStore
  * Abstrae el almacenamiento de datos simples de forma persistente
- * En una implementación real usaría SharedPreferences (Android) o UserDefaults (iOS)
+ * Usa DataStore para almacenamiento real y persistente
  */
-class PreferencesManager {
-    
-    // Simulación de almacenamiento local (en una app real sería persistente)
-    private val storage = mutableMapOf<String, Any>()
+class PreferencesManager(
+    private val dataStore: DataStore<Preferences>
+) {
     
     /**
      * Guarda un string en las preferencias
      */
     suspend fun putString(key: String, value: String) {
-        storage[key] = value
+        val prefKey = stringPreferencesKey(key)
+        dataStore.edit { preferences ->
+            preferences[prefKey] = value
+        }
     }
     
     /**
      * Obtiene un string de las preferencias
      */
     suspend fun getString(key: String, defaultValue: String? = null): String? {
-        return storage[key] as? String ?: defaultValue
+        val prefKey = stringPreferencesKey(key)
+        return dataStore.data.map { preferences ->
+            preferences[prefKey] ?: defaultValue
+        }.first()
     }
     
     /**
      * Guarda un boolean en las preferencias
      */
     suspend fun putBoolean(key: String, value: Boolean) {
-        storage[key] = value
+        val prefKey = booleanPreferencesKey(key)
+        dataStore.edit { preferences ->
+            preferences[prefKey] = value
+        }
     }
     
     /**
      * Obtiene un boolean de las preferencias
      */
     suspend fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
-        return storage[key] as? Boolean ?: defaultValue
+        val prefKey = booleanPreferencesKey(key)
+        return dataStore.data.map { preferences ->
+            preferences[prefKey] ?: defaultValue
+        }.first()
     }
     
     /**
      * Guarda un int en las preferencias
      */
     suspend fun putInt(key: String, value: Int) {
-        storage[key] = value
+        val prefKey = intPreferencesKey(key)
+        dataStore.edit { preferences ->
+            preferences[prefKey] = value
+        }
     }
     
     /**
      * Obtiene un int de las preferencias
      */
     suspend fun getInt(key: String, defaultValue: Int = 0): Int {
-        return storage[key] as? Int ?: defaultValue
+        val prefKey = intPreferencesKey(key)
+        return dataStore.data.map { preferences ->
+            preferences[prefKey] ?: defaultValue
+        }.first()
     }
     
     /**
      * Guarda un long en las preferencias
      */
     suspend fun putLong(key: String, value: Long) {
-        storage[key] = value
+        val prefKey = longPreferencesKey(key)
+        dataStore.edit { preferences ->
+            preferences[prefKey] = value
+        }
     }
     
     /**
      * Obtiene un long de las preferencias
      */
     suspend fun getLong(key: String, defaultValue: Long = 0L): Long {
-        return storage[key] as? Long ?: defaultValue
+        val prefKey = longPreferencesKey(key)
+        return dataStore.data.map { preferences ->
+            preferences[prefKey] ?: defaultValue
+        }.first()
     }
     
     /**
      * Elimina una clave específica de las preferencias
      */
     suspend fun remove(key: String) {
-        storage.remove(key)
+        dataStore.edit { preferences ->
+            val stringKey = stringPreferencesKey(key)
+            val booleanKey = booleanPreferencesKey(key)
+            val intKey = intPreferencesKey(key)
+            val longKey = longPreferencesKey(key)
+            
+            preferences.remove(stringKey)
+            preferences.remove(booleanKey)
+            preferences.remove(intKey)
+            preferences.remove(longKey)
+        }
     }
     
     /**
      * Limpia todas las preferencias
      */
     suspend fun clear() {
-        storage.clear()
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
     }
     
     /**
      * Verifica si existe una clave en las preferencias
      */
     suspend fun contains(key: String): Boolean {
-        return storage.containsKey(key)
+        val stringKey = stringPreferencesKey(key)
+        val booleanKey = booleanPreferencesKey(key)
+        val intKey = intPreferencesKey(key)
+        val longKey = longPreferencesKey(key)
+        
+        return dataStore.data.map { preferences ->
+            preferences.contains(stringKey) || 
+            preferences.contains(booleanKey) || 
+            preferences.contains(intKey) || 
+            preferences.contains(longKey)
+        }.first()
     }
     
     /**
      * Obtiene todas las claves almacenadas
      */
     suspend fun getAllKeys(): Set<String> {
-        return storage.keys.toSet()
+        return dataStore.data.map { preferences ->
+            preferences.asMap().keys.map { it.name }.toSet()
+        }.first()
     }
 }

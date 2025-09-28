@@ -5,6 +5,7 @@ import cl.jlopezr.multiplatform.feature.home.presentation.viewmodel.TaskListView
 import cl.jlopezr.multiplatform.feature.splash.presentation.SplashViewModel
 import cl.jlopezr.multiplatform.feature.login.presentation.LoginViewModel
 import cl.jlopezr.multiplatform.feature.settings.presentation.viewmodel.SettingsViewModel
+import cl.jlopezr.multiplatform.feature.drawer.presentation.AppDrawerViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -46,6 +47,13 @@ val viewModelModule = module {
         SettingsViewModel(
             themeManager = get(),
             taskUseCases = get()
+        ) 
+    }
+    
+    // Drawer ViewModel
+    viewModel { 
+        AppDrawerViewModel(
+            logoutUseCase = get()
         ) 
     }
 }

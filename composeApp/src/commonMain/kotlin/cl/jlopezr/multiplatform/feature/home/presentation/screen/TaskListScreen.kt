@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,6 +53,7 @@ fun TaskListScreen(
     onNavigateToTaskDetail: (String) -> Unit = {},
     onNavigateToLogin: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
+    onToggleDrawer: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     viewModel: TaskListViewModel = koinViewModel()
 ) {
@@ -79,6 +81,16 @@ fun TaskListScreen(
                         text = "Mis Tareas",
                         style = MaterialTheme.typography.headlineSmall
                     ) 
+                },
+                navigationIcon = {
+                    onToggleDrawer?.let { toggleDrawer ->
+                        IconButton(onClick = toggleDrawer) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Menú"
+                            )
+                        }
+                    }
                 },
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {

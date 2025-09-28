@@ -4,6 +4,7 @@ import cl.jlopezr.multiplatform.feature.home.domain.usecase.*
 import cl.jlopezr.multiplatform.feature.splash.domain.usecase.CheckAppVersionUseCase
 import cl.jlopezr.multiplatform.feature.splash.domain.usecase.LoadInitialDataUseCase
 import cl.jlopezr.multiplatform.feature.splash.domain.usecase.ValidateUserSessionUseCase
+import cl.jlopezr.multiplatform.feature.login.domain.repository.LoginRepository
 import cl.jlopezr.multiplatform.feature.login.domain.usecase.LoginUseCase
 import cl.jlopezr.multiplatform.feature.login.domain.usecase.LogoutUseCase
 import cl.jlopezr.multiplatform.feature.login.domain.usecase.IsUserLoggedInUseCase
@@ -42,7 +43,7 @@ val useCaseModule = module {
     // Splash Use Cases
     factory { CheckAppVersionUseCase(get()) }
     factory { LoadInitialDataUseCase(get()) }
-    factory { ValidateUserSessionUseCase(get()) }
+    factory { ValidateUserSessionUseCase(get<LoginRepository>()) }
     
     // Login Use Cases
     factory { LoginUseCase(get()) }
