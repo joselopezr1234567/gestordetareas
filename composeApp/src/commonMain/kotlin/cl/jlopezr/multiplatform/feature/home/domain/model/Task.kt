@@ -62,7 +62,7 @@ enum class TaskPriority(val value: Int, val displayName: String) {
  */
 enum class TaskFilter(val displayName: String) {
     ALL("Todas"),
-    PENDING("Pendientes"),
+    PENDING("𝒫𝑒𝓃𝒹𝒾𝑒𝓃𝓉𝑒𝓈"),
     COMPLETED("Completadas");
 }
 
@@ -70,7 +70,7 @@ enum class TaskFilter(val displayName: String) {
  * Enum que representa los criterios de ordenación
  */
 enum class TaskSortOrder(val displayName: String) {
-    CREATED_DATE_DESC("Más recientes"),
+    CREATED_DATE_DESC("ℳá𝓈 𝓇𝑒𝒸𝒾𝑒𝓃𝓉𝑒𝓈"),
     CREATED_DATE_ASC("Más antiguas"),
     DUE_DATE_ASC("Vencimiento ↑"),
     DUE_DATE_DESC("Vencimiento ↓"),

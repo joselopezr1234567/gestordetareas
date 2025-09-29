@@ -30,7 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cl.jlopezr.multiplatform.feature.home.domain.model.TaskFilter
 import cl.jlopezr.multiplatform.feature.home.domain.model.TaskSortOrder
 
@@ -103,10 +106,15 @@ fun TaskSearchBar(
                     ) {
                         Icon(
                             imageVector = Icons.Default.FilterList,
-                            contentDescription = "Filtrar"
+                            contentDescription = "Filtrar",
+                            tint = Color.White
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(getFilterDisplayName(currentFilter))
+                        Text(
+                            text = getFilterDisplayName(currentFilter),
+                            color = Color.White,
+                            style = TextStyle(fontSize = 18.sp)
+                        )
                     }
                     
                     DropdownMenu(
@@ -115,7 +123,13 @@ fun TaskSearchBar(
                     ) {
                         TaskFilter.values().forEach { filter ->
                             DropdownMenuItem(
-                                text = { Text(getFilterDisplayName(filter)) },
+                                text = { 
+                                    Text(
+                                        text = getFilterDisplayName(filter),
+                                        color = Color.White,
+                                        style = TextStyle(fontSize = 18.sp)
+                                    ) 
+                                },
                                 onClick = {
                                     onFilterChange(filter)
                                     showFilterMenu = false
@@ -134,10 +148,15 @@ fun TaskSearchBar(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Sort,
-                            contentDescription = "Ordenar"
+                            contentDescription = "Ordenar",
+                            tint = Color.White
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(getSortOrderDisplayName(currentSortOrder))
+                        Text(
+                            text = getSortOrderDisplayName(currentSortOrder),
+                            color = Color.White,
+                            style = TextStyle(fontSize = 18.sp)
+                        )
                     }
                     
                     DropdownMenu(
@@ -146,7 +165,13 @@ fun TaskSearchBar(
                     ) {
                         TaskSortOrder.values().forEach { sortOrder ->
                             DropdownMenuItem(
-                                text = { Text(getSortOrderDisplayName(sortOrder)) },
+                                text = { 
+                                    Text(
+                                        text = getSortOrderDisplayName(sortOrder),
+                                        color = Color.White,
+                                        style = TextStyle(fontSize = 18.sp)
+                                    ) 
+                                },
                                 onClick = {
                                     onSortOrderChange(sortOrder)
                                     showSortMenu = false
@@ -166,7 +191,7 @@ fun TaskSearchBar(
 private fun getFilterDisplayName(filter: TaskFilter): String {
     return when (filter) {
         TaskFilter.ALL -> "Todas"
-        TaskFilter.PENDING -> "Pendientes"
+        TaskFilter.PENDING -> "𝒫𝑒𝓃𝒹𝒾𝑒𝓃𝓉𝑒𝓈"
         TaskFilter.COMPLETED -> "Completadas"
     }
 }
@@ -176,7 +201,7 @@ private fun getFilterDisplayName(filter: TaskFilter): String {
  */
 private fun getSortOrderDisplayName(sortOrder: TaskSortOrder): String {
     return when (sortOrder) {
-        TaskSortOrder.CREATED_DATE_DESC -> "Más recientes"
+        TaskSortOrder.CREATED_DATE_DESC -> "ℳá𝓈 𝓇𝑒𝒸𝒾𝑒𝓃𝓉𝑒𝓈"
         TaskSortOrder.CREATED_DATE_ASC -> "Más antiguas"
         TaskSortOrder.DUE_DATE_ASC -> "Vencimiento ↑"
         TaskSortOrder.DUE_DATE_DESC -> "Vencimiento ↓"

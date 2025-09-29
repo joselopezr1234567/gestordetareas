@@ -1,11 +1,13 @@
 package cl.jlopezr.multiplatform.feature.home.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -94,38 +97,53 @@ fun TaskListScreen(
     }
     
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.background(Color.Black),
+        containerColor = Color.Black,
         topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        text = "Mis Tareas",
-                        style = MaterialTheme.typography.headlineSmall
-                    ) 
-                },
-                navigationIcon = {
-                    onToggleDrawer?.let { toggleDrawer ->
-                        IconButton(onClick = toggleDrawer) {
+            Column {
+                TopAppBar(
+                    title = { 
+                        Text(
+                            text = "𝕄𝕚𝕤 𝕥𝕒𝕣𝕖𝕒𝕤",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = Color.White
+                        ) 
+                    },
+                    navigationIcon = {
+                        onToggleDrawer?.let { toggleDrawer ->
+                            IconButton(onClick = toggleDrawer) {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = "Menú",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = onNavigateToSettings) {
                             Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = "Menú"
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Configuraciones",
+                                tint = Color.White
                             )
                         }
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onNavigateToSettings) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Configuraciones"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Black,
+                        titleContentColor = Color.White,
+                        navigationIconContentColor = Color.White,
+                        actionIconContentColor = Color.White
+                    )
                 )
-            )
+                // Línea blanca debajo del TopAppBar
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.White)
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -148,9 +166,12 @@ fun TaskListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(Color.Black)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
             ) {
                 // Barra de búsqueda y filtros
                 TaskSearchBar(
@@ -173,7 +194,9 @@ fun TaskListScreen(
                     uiState.isLoading && uiState.tasks.isEmpty() -> {
                         // Estado de carga inicial
                         Box(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black),
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator()
@@ -183,7 +206,9 @@ fun TaskListScreen(
                     uiState.tasks.isEmpty() && !uiState.isLoading -> {
                         // Estado vacío
                         Box(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black),
                             contentAlignment = Alignment.Center
                         ) {
                             Column(
@@ -197,7 +222,7 @@ fun TaskListScreen(
                                     },
                                     style = MaterialTheme.typography.bodyLarge,
                                     textAlign = TextAlign.Center,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = Color.White
                                 )
                             }
                         }
