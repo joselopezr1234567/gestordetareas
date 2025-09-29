@@ -28,19 +28,24 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cl.jlopezr.multiplatform.feature.home.domain.model.Task
+import cl.jlopezr.multiplatform.feature.home.presentation.components.TaskActionDialog
 import cl.jlopezr.multiplatform.feature.home.presentation.components.TaskItem
 import cl.jlopezr.multiplatform.feature.home.presentation.components.TaskSearchBar
 import cl.jlopezr.multiplatform.feature.home.presentation.event.TaskListUiEvent
 import cl.jlopezr.multiplatform.feature.home.presentation.state.TaskListUiState
 import cl.jlopezr.multiplatform.feature.home.presentation.viewmodel.TaskListViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import kotlinx.coroutines.delay
 
 /**
  * Pantalla principal que muestra la lista de tareas
@@ -54,15 +59,31 @@ fun TaskListScreen(
     onNavigateToLogin: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
     onToggleDrawer: (() -> Unit)? = null,
+    taskActionId: String? = null,
+    viewTaskFromNotification: String? = null,
     modifier: Modifier = Modifier,
     viewModel: TaskListViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState
     val snackbarHostState = remember { SnackbarHostState() }
     
+    // Estado para el diálogo de acción de tarea
+    var showTaskActionDialog by remember { mutableStateOf(taskActionId != null) }
+    
+    // Estado para el diálogo de notificación
+    var showNotificationDialog by remember { mutableStateOf(false) }
+    
     // Efectos para manejar eventos
     LaunchedEffect(Unit) {
         viewModel.onEvent(TaskListUiEvent.LoadTasks)
+    }
+    
+    // Efecto para mostrar diálogo después de delay cuando viene de notificación
+    LaunchedEffect(viewTaskFromNotification) {
+        if (viewTaskFromNotification != null) {
+            delay(1000) // Delay de 1 segundo
+            showNotificationDialog = true
+        }
     }
     
     LaunchedEffect(uiState.error) {
@@ -195,9 +216,6 @@ fun TaskListScreen(
                             ) { task ->
                                 TaskItem(
                                     task = task,
-                                    onToggleCompletion = { taskId ->
-                                        viewModel.onEvent(TaskListUiEvent.ToggleTaskCompletion(taskId))
-                                    },
                                     onEdit = { taskId ->
                                         onNavigateToEditTask(taskId)
                                     },
@@ -210,6 +228,60 @@ fun TaskListScreen(
                     }
                 }
             }
+        }
+    }
+    
+    // Diálogo de acción de tarea desde notificación
+    if (showTaskActionDialog && taskActionId != null) {
+        // Buscar la tarea en la lista actual
+        val task = uiState.tasks.find { it.id == taskActionId }
+        
+        if (task != null) {
+            TaskActionDialog(
+                task = task,
+                isVisible = true,
+                onCompleteTask = {
+                    viewModel.onEvent(TaskListUiEvent.ToggleTaskCompletion(taskActionId))
+                    showTaskActionDialog = false
+                },
+                onEditTask = {
+                    onNavigateToEditTask(taskActionId)
+                    showTaskActionDialog = false
+                },
+                onDismiss = {
+                    showTaskActionDialog = false
+                }
+            )
+        } else {
+            // Si no se encuentra la tarea, cerrar el diálogo
+            showTaskActionDialog = false
+        }
+    }
+    
+    // Diálogo de notificación después del delay
+    if (showNotificationDialog && viewTaskFromNotification != null) {
+        // Buscar la tarea en la lista actual
+        val task = uiState.tasks.find { it.id == viewTaskFromNotification }
+        
+        if (task != null) {
+            TaskActionDialog(
+                task = task,
+                isVisible = true,
+                onCompleteTask = {
+                    viewModel.onEvent(TaskListUiEvent.ToggleTaskCompletion(viewTaskFromNotification))
+                    showNotificationDialog = false
+                },
+                onEditTask = {
+                    onNavigateToEditTask(viewTaskFromNotification)
+                    showNotificationDialog = false
+                },
+                onDismiss = {
+                    showNotificationDialog = false
+                }
+            )
+        } else {
+            // Si no se encuentra la tarea, cerrar el diálogo
+            showNotificationDialog = false
         }
     }
 }

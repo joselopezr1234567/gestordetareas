@@ -51,13 +51,11 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 fun TaskItem(
     task: Task,
-    onToggleCompletion: (String) -> Unit,
     onEdit: (String) -> Unit,
     onDelete: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var showCompletionDialog by remember { mutableStateOf(false) }
     
     Card(
         modifier = modifier
@@ -79,38 +77,6 @@ fun TaskItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Checkbox para completar/descompletar
-            IconButton(
-                onClick = { 
-                    if (task.isCompleted) {
-                        // Si ya está completada, permitir desmarcar directamente
-                        onToggleCompletion(task.id)
-                    } else {
-                        // Si no está completada, mostrar diálogo de confirmación
-                        showCompletionDialog = true
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = if (task.isCompleted) {
-                        Icons.Filled.CheckCircle
-                    } else {
-                        Icons.Outlined.Circle
-                    },
-                    contentDescription = if (task.isCompleted) {
-                        "Marcar como pendiente"
-                    } else {
-                        "Marcar como completada - Toca para completar esta tarea"
-                    },
-                    tint = if (task.isCompleted) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                )
-            }
-            
-            Spacer(modifier = Modifier.width(12.dp))
             
             // Contenido de la tarea
             Column(
@@ -230,31 +196,7 @@ fun TaskItem(
         )
     }
     
-    // Diálogo de confirmación para completar tarea
-    if (showCompletionDialog) {
-        AlertDialog(
-            onDismissRequest = { showCompletionDialog = false },
-            title = { Text("Completar tarea") },
-            text = { Text("¿Marcar esta tarea como completada? La tarea se moverá a la sección de completadas.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onToggleCompletion(task.id)
-                        showCompletionDialog = false
-                    }
-                ) {
-                    Text("Completar")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showCompletionDialog = false }
-                ) {
-                    Text("Cancelar")
-                }
-            }
-        )
-    }
+
 }
 
 /**

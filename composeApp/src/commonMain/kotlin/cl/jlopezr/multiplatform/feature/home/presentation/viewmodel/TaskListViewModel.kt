@@ -67,30 +67,50 @@ class TaskListViewModel(
      */
     private fun loadTasks() {
         loadTasksJob?.cancel()
-        loadTasksJob = taskUseCases.getFilteredTasks(
-            filter = uiState.currentFilter,
-            sortOrder = uiState.currentSortOrder,
-            searchQuery = uiState.searchQuery
-        )
-            .onEach { tasks ->
-                uiState = uiState.copy(
-                    tasks = tasks,
-                    isLoading = false,
-                    error = null,
-                    isRefreshing = false
-                )
-            }
-            .catch { error ->
-                uiState = uiState.copy(
-                    isLoading = false,
-                    error = error.message ?: "Error desconocido",
-                    isRefreshing = false
-                )
-            }
-            .launchIn(viewModelScope)
         
-        if (!uiState.isRefreshing) {
-            uiState = uiState.copy(isLoading = true, error = null)
+        try {
+            loadTasksJob = taskUseCases.getFilteredTasks(
+                filter = uiState.currentFilter,
+                sortOrder = uiState.currentSortOrder,
+                searchQuery = uiState.searchQuery
+            )
+                .onEach { tasks ->
+                    try {
+                        uiState = uiState.copy(
+                            tasks = tasks,
+                            isLoading = false,
+                            error = null,
+                            isRefreshing = false
+                        )
+                    } catch (e: Exception) {
+                        println("Error updating UI state: ${e.message}")
+                        uiState = uiState.copy(
+                            isLoading = false,
+                            error = "Error al actualizar la interfaz: ${e.message}",
+                            isRefreshing = false
+                        )
+                    }
+                }
+                .catch { error ->
+                    println("Error in task flow: ${error.message}")
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        error = error.message ?: "Error desconocido al cargar tareas",
+                        isRefreshing = false
+                    )
+                }
+                .launchIn(viewModelScope)
+            
+            if (!uiState.isRefreshing) {
+                uiState = uiState.copy(isLoading = true, error = null)
+            }
+        } catch (e: Exception) {
+            println("Error initializing task loading: ${e.message}")
+            uiState = uiState.copy(
+                isLoading = false,
+                error = "Error al inicializar la carga de tareas: ${e.message}",
+                isRefreshing = false
+            )
         }
     }
     

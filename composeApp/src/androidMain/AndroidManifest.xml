@@ -42,6 +42,37 @@
             android:enabled="true"
             android:exported="false" />
             
+        <!-- Receiver para completado automático de tareas -->
+        <receiver
+            android:name="cl.jlopezr.multiplatform.core.alarm.TaskCompletionReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="cl.jlopezr.multiplatform.COMPLETE_TASK" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- Receiver para apagar alarma y ver tarea -->
+        <receiver
+            android:name="cl.jlopezr.multiplatform.core.alarm.DismissAndViewTaskReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="cl.jlopezr.multiplatform.DISMISS_AND_VIEW_TASK" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- Receiver para acciones de tarea (completar/actualizar) -->
+        <receiver
+            android:name="cl.jlopezr.multiplatform.core.alarm.TaskActionReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="cl.jlopezr.multiplatform.COMPLETE_TASK_ACTION" />
+                <action android:name="cl.jlopezr.multiplatform.UPDATE_TASK_ACTION" />
+            </intent-filter>
+        </receiver>
+            
         <!-- Servicio de alarma -->
         <service
             android:name="cl.jlopezr.multiplatform.core.alarm.AlarmService"
@@ -57,6 +88,16 @@
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" />
+            
+        <!-- Receptor para sesión expirada -->
+        <receiver
+            android:name="cl.jlopezr.multiplatform.core.session.SessionExpiredReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="cl.jlopezr.multiplatform.SESSION_EXPIRED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

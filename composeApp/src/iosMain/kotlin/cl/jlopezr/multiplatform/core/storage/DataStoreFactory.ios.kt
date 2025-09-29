@@ -12,19 +12,29 @@ import platform.Foundation.NSUserDomainMask
  * Implementación de DataStoreFactory para iOS
  */
 actual object DataStoreFactory {
+    @Volatile
+    private var dataStoreInstance: DataStore<Preferences>? = null
+    
     actual fun createDataStore(): DataStore<Preferences> {
-        return createDataStore(
-            producePath = {
-                val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
-                    directory = NSDocumentDirectory,
-                    inDomain = NSUserDomainMask,
-                    appropriateForURL = null,
-                    create = false,
-                    error = null,
-                )
-                requireNotNull(documentDirectory).path + "/tasks_preferences.preferences_pb"
+        // Double-checked locking pattern más robusto
+        return dataStoreInstance ?: synchronized(this) {
+            dataStoreInstance ?: run {
+                PreferenceDataStoreFactory.createWithPath(
+                    produceFile = {
+                        val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
+                            directory = NSDocumentDirectory,
+                            inDomain = NSUserDomainMask,
+                            appropriateForURL = null,
+                            create = false,
+                            error = null,
+                        )
+                        requireNotNull(documentDirectory).path + "/tasks_preferences.preferences_pb"
+                    }
+                ).also { 
+                    dataStoreInstance = it 
+                }
             }
-        )
+        }
     }
 }
 

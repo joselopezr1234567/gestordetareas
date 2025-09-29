@@ -1,5 +1,6 @@
 package cl.jlopezr.multiplatform.di
 
+import cl.jlopezr.multiplatform.feature.home.presentation.viewmodel.TaskDetailViewModel
 import cl.jlopezr.multiplatform.feature.home.presentation.viewmodel.TaskFormViewModel
 import cl.jlopezr.multiplatform.feature.home.presentation.viewmodel.TaskListViewModel
 import cl.jlopezr.multiplatform.feature.splash.presentation.SplashViewModel
@@ -22,6 +23,10 @@ val viewModelModule = module {
     
     viewModel { 
         TaskFormViewModel(taskUseCases = get()) 
+    }
+    
+    viewModel { 
+        TaskDetailViewModel(taskUseCases = get()) 
     }
     
     // Splash ViewModel

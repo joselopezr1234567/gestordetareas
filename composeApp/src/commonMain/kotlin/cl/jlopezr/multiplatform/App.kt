@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import cl.jlopezr.multiplatform.di.appModule
 import cl.jlopezr.multiplatform.feature.splash.ui.SplashScreen
 import cl.jlopezr.multiplatform.feature.login.presentation.LoginScreen
+import cl.jlopezr.multiplatform.feature.home.presentation.screen.TaskDetailScreen
 import cl.jlopezr.multiplatform.feature.home.presentation.screen.TaskListScreen
 import cl.jlopezr.multiplatform.feature.home.presentation.screen.TaskFormScreen
 import cl.jlopezr.multiplatform.feature.settings.presentation.screen.SettingsScreen
@@ -39,12 +40,24 @@ import org.koin.compose.KoinApplication
  */
 @Composable
 @Preview
-fun App() {
+fun App(
+    forceLogin: Boolean = false,
+    viewTaskId: String? = null,
+    editTaskId: String? = null,
+    taskActionId: String? = null,
+    viewTaskFromNotification: String? = null
+) {
     KoinApplication(application = {
         modules(appModule)
     }) {
         AgendaTareasTheme {
-            AppNavigation()
+            AppNavigation(
+                forceLogin = forceLogin,
+                viewTaskId = viewTaskId,
+                editTaskId = editTaskId,
+                taskActionId = taskActionId,
+                viewTaskFromNotification = viewTaskFromNotification
+            )
         }
     }
 }
@@ -55,9 +68,26 @@ fun App() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AppNavigation() {
+private fun AppNavigation(
+    forceLogin: Boolean = false,
+    viewTaskId: String? = null,
+    editTaskId: String? = null,
+    taskActionId: String? = null,
+    viewTaskFromNotification: String? = null
+) {
     var navigationState by remember { 
-        mutableStateOf(NavigationState(currentScreen = Screen.Splash)) 
+        mutableStateOf(NavigationState(
+            currentScreen = when {
+                forceLogin -> Screen.Login
+                viewTaskId != null -> Screen.TaskDetail
+                editTaskId != null -> Screen.TaskForm
+                taskActionId != null -> Screen.TaskList // Go to TaskList to show dialog
+                viewTaskFromNotification != null -> Screen.TaskList // Go to home (TaskList)
+                else -> Screen.Splash
+            },
+            taskId = viewTaskId ?: editTaskId ?: taskActionId ?: viewTaskFromNotification,
+            isEditMode = editTaskId != null
+        )) 
     }
     
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -111,14 +141,17 @@ private fun AppNavigation() {
             AppContent(
                 navigationState = navigationState,
                 onNavigationStateChange = { navigationState = it },
-                onToggleDrawer = toggleDrawer
+                onToggleDrawer = toggleDrawer,
+                taskActionId = taskActionId,
+                viewTaskFromNotification = viewTaskFromNotification
             )
         }
     } else {
         AppContent(
             navigationState = navigationState,
             onNavigationStateChange = { navigationState = it },
-            onToggleDrawer = null
+            onToggleDrawer = null,
+            viewTaskFromNotification = viewTaskFromNotification
         )
     }
 }
@@ -130,7 +163,9 @@ private fun AppNavigation() {
 private fun AppContent(
     navigationState: NavigationState,
     onNavigationStateChange: (NavigationState) -> Unit,
-    onToggleDrawer: (() -> Unit)?
+    onToggleDrawer: (() -> Unit)?,
+    taskActionId: String? = null,
+    viewTaskFromNotification: String? = null
 ) {
     
     when (navigationState.currentScreen) {
@@ -181,7 +216,9 @@ private fun AppContent(
                 onNavigateToSettings = {
                     onNavigationStateChange(navigationState.copy(currentScreen = Screen.Settings))
                 },
-                onToggleDrawer = onToggleDrawer
+                onToggleDrawer = onToggleDrawer,
+                taskActionId = taskActionId,
+                viewTaskFromNotification = viewTaskFromNotification
             )
         }
         
@@ -199,12 +236,31 @@ private fun AppContent(
         }
         
         Screen.TaskDetail -> {
-            // Por ahora redirigimos a TaskList, se implementará en futuras iteraciones
-            LaunchedEffect(Unit) {
-                onNavigationStateChange(navigationState.copy(
-                    currentScreen = Screen.TaskList,
-                    taskId = null
-                ))
+            navigationState.taskId?.let { taskId ->
+                TaskDetailScreen(
+                    taskId = taskId,
+                    onNavigateBack = {
+                        onNavigationStateChange(navigationState.copy(
+                            currentScreen = Screen.TaskList,
+                            taskId = null
+                        ))
+                    },
+                    onNavigateToEdit = { editTaskId ->
+                        onNavigationStateChange(navigationState.copy(
+                            currentScreen = Screen.TaskForm,
+                            taskId = editTaskId,
+                            isEditMode = true
+                        ))
+                    }
+                )
+            } ?: run {
+                // Si no hay taskId, redirigir a TaskList
+                LaunchedEffect(Unit) {
+                    onNavigationStateChange(navigationState.copy(
+                        currentScreen = Screen.TaskList,
+                        taskId = null
+                    ))
+                }
             }
         }
         

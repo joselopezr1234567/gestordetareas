@@ -25,12 +25,13 @@ class AlarmService : Service() {
     
     companion object {
         private const val TAG = "AlarmService"
-        private const val NOTIFICATION_ID = 1001
         private const val CHANNEL_ID = "alarm_channel"
-        private const val CHANNEL_NAME = "Alarmas de Tareas"
+        private const val CHANNEL_NAME = "Alarmas de Recordatorios"
+        private const val NOTIFICATION_ID = 1001
         
         const val ACTION_START_ALARM = "START_ALARM"
         const val ACTION_STOP_ALARM = "STOP_ALARM"
+        const val ACTION_DISMISS_AND_VIEW_TASK = "DISMISS_AND_VIEW_TASK"
         const val EXTRA_TASK_ID = "task_id"
         const val EXTRA_TASK_TITLE = "task_title"
         const val EXTRA_TASK_MESSAGE = "task_message"
@@ -56,6 +57,7 @@ class AlarmService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private var vibrator: Vibrator? = null
     private var isAlarmActive = false
+    private var currentTaskId: String = ""
     
     override fun onCreate() {
         super.onCreate()
@@ -93,6 +95,7 @@ class AlarmService : Service() {
         
         Log.d(TAG, "Iniciando alarma para tarea: $taskId")
         isAlarmActive = true
+        currentTaskId = taskId
         
         // Crear notificación persistente
         val notification = createAlarmNotification(title, message)
@@ -161,6 +164,18 @@ class AlarmService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
+        // Intent para apagar y ver tarea
+        val dismissAndViewTaskIntent = Intent("cl.jlopezr.multiplatform.DISMISS_AND_VIEW_TASK").apply {
+            putExtra(EXTRA_TASK_ID, currentTaskId)
+            setPackage(packageName)
+        }
+        val dismissAndViewTaskPendingIntent = PendingIntent.getBroadcast(
+            this,
+            2,
+            dismissAndViewTaskIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
             .setContentTitle("🔔 $title")
@@ -175,6 +190,11 @@ class AlarmService : Service() {
                 android.R.drawable.ic_media_pause,
                 "Apagar Alarma",
                 stopAlarmPendingIntent
+            )
+            .addAction(
+                android.R.drawable.ic_menu_view,
+                "Ver Tarea",
+                dismissAndViewTaskPendingIntent
             )
             .setFullScreenIntent(openAppPendingIntent, true)
             .build()

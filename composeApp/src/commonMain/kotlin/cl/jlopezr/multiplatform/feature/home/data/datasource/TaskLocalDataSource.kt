@@ -41,6 +41,9 @@ class TaskLocalDataSource(
                 try {
                     json.decodeFromString<TaskListDto>(tasksJson).tasks
                 } catch (e: Exception) {
+                    println("Error deserializing tasks from DataStore: ${e.message}")
+                    println("Corrupted JSON: $tasksJson")
+                    // En caso de datos corruptos, devolver lista vacía para evitar crashes
                     emptyList()
                 }
             }
@@ -51,10 +54,15 @@ class TaskLocalDataSource(
      * Guarda una lista de tareas
      */
     suspend fun saveTasks(tasks: List<TaskDto>) {
-        dataStore.edit { preferences ->
-            val taskListDto = TaskListDto(tasks)
-            val tasksJson = json.encodeToString(taskListDto)
-            preferences[TASKS_KEY] = tasksJson
+        try {
+            dataStore.edit { preferences ->
+                val taskListDto = TaskListDto(tasks)
+                val tasksJson = json.encodeToString(taskListDto)
+                preferences[TASKS_KEY] = tasksJson
+            }
+        } catch (e: Exception) {
+            println("Error saving tasks to DataStore: ${e.message}")
+            throw e // Re-lanzar para que el repositorio pueda manejar el error
         }
     }
     
@@ -102,23 +110,36 @@ class TaskLocalDataSource(
      * Actualiza una tarea existente
      */
     suspend fun updateTask(task: TaskDto) {
-        dataStore.edit { preferences ->
-            val tasksJson = preferences[TASKS_KEY] ?: ""
-            val currentTasks = if (tasksJson.isEmpty()) {
-                emptyList()
-            } else {
-                try {
-                    json.decodeFromString<TaskListDto>(tasksJson).tasks
-                } catch (e: Exception) {
+        try {
+            dataStore.edit { preferences ->
+                val tasksJson = preferences[TASKS_KEY] ?: ""
+                val currentTasks = if (tasksJson.isEmpty()) {
                     emptyList()
+                } else {
+                    try {
+                        json.decodeFromString<TaskListDto>(tasksJson).tasks
+                    } catch (e: Exception) {
+                        println("Error reading tasks for update: ${e.message}")
+                        emptyList()
+                    }
                 }
+                
+                val updatedTasks = currentTasks.map { 
+                    if (it.id == task.id) task else it 
+                }
+                
+                // Verificar que la tarea fue encontrada y actualizada
+                val taskFound = currentTasks.any { it.id == task.id }
+                if (!taskFound) {
+                    println("Warning: Task with id ${task.id} not found for update")
+                }
+                
+                val taskListDto = TaskListDto(updatedTasks)
+                preferences[TASKS_KEY] = json.encodeToString(taskListDto)
             }
-            
-            val updatedTasks = currentTasks.map { 
-                if (it.id == task.id) task else it 
-            }
-            val taskListDto = TaskListDto(updatedTasks)
-            preferences[TASKS_KEY] = json.encodeToString(taskListDto)
+        } catch (e: Exception) {
+            println("Error updating task ${task.id}: ${e.message}")
+            throw e // Re-lanzar para que el repositorio pueda manejar el error
         }
     }
     

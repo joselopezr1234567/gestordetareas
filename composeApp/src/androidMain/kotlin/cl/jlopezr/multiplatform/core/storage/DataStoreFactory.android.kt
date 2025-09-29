@@ -13,15 +13,29 @@ import java.io.File
 actual object DataStoreFactory {
     private lateinit var context: Context
     
+    @Volatile
+    private var dataStoreInstance: DataStore<Preferences>? = null
+    
     fun initialize(context: Context) {
-        this.context = context
+        this.context = context.applicationContext // Usar applicationContext para evitar memory leaks
     }
     
     actual fun createDataStore(): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.createWithPath(
-            produceFile = { 
-                File(context.filesDir, "tasks_preferences.preferences_pb").absolutePath.toPath()
+        // Double-checked locking pattern más robusto
+        return dataStoreInstance ?: synchronized(this) {
+            dataStoreInstance ?: run {
+                if (!::context.isInitialized) {
+                    throw IllegalStateException("DataStoreFactory must be initialized with a Context before creating DataStore")
+                }
+                
+                PreferenceDataStoreFactory.createWithPath(
+                    produceFile = { 
+                        File(context.filesDir, "tasks_preferences.preferences_pb").absolutePath.toPath()
+                    }
+                ).also { 
+                    dataStoreInstance = it 
+                }
             }
-        )
+        }
     }
 }

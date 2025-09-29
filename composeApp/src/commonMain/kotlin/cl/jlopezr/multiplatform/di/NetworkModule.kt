@@ -16,7 +16,6 @@ val networkModule = module {
     
     // Core Network & Storage
     single { FakeApiRepository() }
-    single { PreferencesManager(dataStore = get()) }
     
     // Splash Data Sources
     single { SplashLocalDataSource() }

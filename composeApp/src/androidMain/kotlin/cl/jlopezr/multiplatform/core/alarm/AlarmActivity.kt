@@ -97,11 +97,12 @@ class AlarmActivity : ComponentActivity() {
     }
     
     private fun openMainApp() {
-        Log.d(TAG, "Abriendo aplicación principal")
+        Log.d(TAG, "Abriendo aplicación principal desde alarma")
         AlarmService.stopAlarm(this)
         
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("from_alarm", true)
         }
         startActivity(intent)
         finish()
