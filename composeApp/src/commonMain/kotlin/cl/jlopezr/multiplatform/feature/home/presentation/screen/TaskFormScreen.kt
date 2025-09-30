@@ -249,7 +249,7 @@ fun TaskFormScreen(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = if (uiState.dueDate != null) {
-                                    "${uiState.dueDate!!.date} - ${String.format("%02d:%02d", uiState.dueDate!!.hour, uiState.dueDate!!.minute)}"
+                                    "${uiState.dueDate!!.date} - ${uiState.dueDate!!.hour.toString().padStart(2, '0')}:${uiState.dueDate!!.minute.toString().padStart(2, '0')}"
                                 } else {
                                     "Seleccionar fecha y hora"
                                 }

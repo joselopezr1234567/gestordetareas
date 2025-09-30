@@ -243,7 +243,7 @@ fun TimePickerDialog(
                             onExpandedChange = { hourExpanded = !hourExpanded }
                         ) {
                             OutlinedTextField(
-                                value = String.format("%02d", selectedHour),
+                                value = selectedHour.toString().padStart(2, '0'),
                                 onValueChange = { },
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = hourExpanded) },
@@ -256,7 +256,7 @@ fun TimePickerDialog(
                             ) {
                                 for (hour in 0..23) {
                                     DropdownMenuItem(
-                                        text = { Text(String.format("%02d", hour)) },
+                                        text = { Text(hour.toString().padStart(2, '0')) },
                                         onClick = {
                                             selectedHour = hour
                                             hourExpanded = false
@@ -288,7 +288,7 @@ fun TimePickerDialog(
                             onExpandedChange = { minuteExpanded = !minuteExpanded }
                         ) {
                             OutlinedTextField(
-                                value = String.format("%02d", selectedMinute),
+                                value = selectedMinute.toString().padStart(2, '0'),
                                 onValueChange = { },
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = minuteExpanded) },
@@ -301,7 +301,7 @@ fun TimePickerDialog(
                             ) {
                                 for (minute in 0..59) {
                                     DropdownMenuItem(
-                                        text = { Text(String.format("%02d", minute)) },
+                                        text = { Text(minute.toString().padStart(2, '0')) },
                                         onClick = {
                                             selectedMinute = minute
                                             minuteExpanded = false
@@ -341,7 +341,7 @@ fun TimePickerDialog(
                             )
                             
                             Text(
-                                text = "${selectedDay}/${selectedMonth}/${selectedYear} - ${String.format("%02d:%02d", selectedHour, selectedMinute)}",
+                                text = "${selectedDay}/${selectedMonth}/${selectedYear} - ${selectedHour.toString().padStart(2, '0')}:${selectedMinute.toString().padStart(2, '0')}",
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer

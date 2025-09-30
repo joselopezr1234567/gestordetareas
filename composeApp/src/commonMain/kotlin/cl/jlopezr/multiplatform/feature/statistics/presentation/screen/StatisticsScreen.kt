@@ -170,7 +170,7 @@ private fun StatisticsContent(
                             )
                         }
                         Text(
-                            text = "${String.format("%.1f", uiState.statistics.completionRate)}%",
+                            text = "${(uiState.statistics.completionRate * 10).toInt() / 10.0}%",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary

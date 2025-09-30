@@ -43,7 +43,11 @@ class AlarmService : Service() {
                 putExtra(EXTRA_TASK_TITLE, title)
                 putExtra(EXTRA_TASK_MESSAGE, message)
             }
-            context.startForegroundService(intent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
         }
         
         fun stopAlarm(context: Context) {

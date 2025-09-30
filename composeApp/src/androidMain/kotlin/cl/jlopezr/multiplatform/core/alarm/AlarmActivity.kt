@@ -111,6 +111,7 @@ class AlarmActivity : ComponentActivity() {
     override fun onBackPressed() {
         // No permitir cerrar con el botón de atrás
         // El usuario debe usar los botones de la interfaz
+        super.onBackPressed()
     }
 }
 

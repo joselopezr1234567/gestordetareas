@@ -150,7 +150,9 @@ class MainActivity : ComponentActivity() {
      * Envía un broadcast para notificar que la sesión ha expirado
      */
     private fun sendSessionExpiredBroadcast() {
-        val intent = Intent(ACTION_SESSION_EXPIRED)
+        val intent = Intent(ACTION_SESSION_EXPIRED).apply {
+            setClass(this@MainActivity, cl.jlopezr.multiplatform.core.session.SessionExpiredReceiver::class.java)
+        }
         sendBroadcast(intent)
         Log.d(TAG, "Broadcast de sesión expirada enviado")
     }
