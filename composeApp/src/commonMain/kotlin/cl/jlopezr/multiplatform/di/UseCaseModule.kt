@@ -12,13 +12,10 @@ import cl.jlopezr.multiplatform.feature.login.domain.usecase.ValidateEmailUseCas
 import cl.jlopezr.multiplatform.feature.login.domain.usecase.ValidatePasswordUseCase
 import org.koin.dsl.module
 
-/**
- * Módulo de casos de uso
- * Configura las dependencias de la lógica de negocio
- */
+
 val useCaseModule = module {
     
-    // Task Use Cases
+
     factory { GetFilteredTasksUseCase(get()) }
     factory { GetTaskByIdUseCase(get()) }
     factory { CreateTaskUseCase(get()) }
@@ -27,7 +24,7 @@ val useCaseModule = module {
     factory { ToggleTaskCompletionUseCase(get()) }
     factory { GetTaskStatisticsUseCase(get()) }
     
-    // Task Use Cases Aggregator
+
     factory { 
         TaskUseCases(
             getFilteredTasks = get(),
@@ -40,12 +37,12 @@ val useCaseModule = module {
         )
     }
     
-    // Splash Use Cases
+
     factory { CheckAppVersionUseCase(get()) }
     factory { LoadInitialDataUseCase(get()) }
     factory { ValidateUserSessionUseCase(get<LoginRepository>()) }
     
-    // Login Use Cases
+
     factory { LoginUseCase(get()) }
     factory { LogoutUseCase(get()) }
     factory { IsUserLoggedInUseCase(get()) }

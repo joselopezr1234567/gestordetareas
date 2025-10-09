@@ -10,9 +10,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-/**
- * Implementación de DataStoreFactory para iOS
- */
+
 actual object DataStoreFactory {
     private var dataStoreInstance: DataStore<Preferences>? = null
     

@@ -37,9 +37,7 @@ import androidx.compose.ui.unit.sp
 import cl.jlopezr.multiplatform.feature.home.domain.model.TaskFilter
 import cl.jlopezr.multiplatform.feature.home.domain.model.TaskSortOrder
 
-/**
- * Barra de búsqueda y filtros para las tareas
- */
+
 @Composable
 fun TaskSearchBar(
     searchQuery: String,
@@ -62,7 +60,7 @@ fun TaskSearchBar(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Barra de búsqueda
+
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
@@ -91,13 +89,13 @@ fun TaskSearchBar(
             
             Spacer(modifier = Modifier.height(12.dp))
             
-            // Botones de filtro y ordenamiento
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Filtro
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -139,7 +137,7 @@ fun TaskSearchBar(
                     }
                 }
                 
-                // Ordenamiento
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -185,9 +183,7 @@ fun TaskSearchBar(
     }
 }
 
-/**
- * Obtiene el nombre para mostrar del filtro
- */
+
 private fun getFilterDisplayName(filter: TaskFilter): String {
     return when (filter) {
         TaskFilter.ALL -> "Todas"
@@ -196,9 +192,7 @@ private fun getFilterDisplayName(filter: TaskFilter): String {
     }
 }
 
-/**
- * Obtiene el nombre para mostrar del orden
- */
+
 private fun getSortOrderDisplayName(sortOrder: TaskSortOrder): String {
     return when (sortOrder) {
         TaskSortOrder.CREATED_DATE_DESC -> "ℳá𝓈 𝓇𝑒𝒸𝒾𝑒𝓃𝓉𝑒𝓈"

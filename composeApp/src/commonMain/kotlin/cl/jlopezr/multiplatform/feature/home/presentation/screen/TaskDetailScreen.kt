@@ -54,9 +54,7 @@ import cl.jlopezr.multiplatform.feature.home.presentation.viewmodel.TaskDetailVi
 import kotlinx.datetime.LocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Pantalla para mostrar los detalles de una tarea específica
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailScreen(
@@ -70,7 +68,7 @@ fun TaskDetailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
     
-    // Efectos para manejar eventos
+
     LaunchedEffect(taskId) {
         viewModel.onEvent(TaskDetailUiEvent.LoadTask(taskId))
     }
@@ -133,18 +131,18 @@ fun TaskDetailScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Título de la tarea
+
                     TaskTitleCard(task = task)
                     
-                    // Información de la tarea
+
                     TaskInfoCard(task = task)
                     
-                    // Descripción
+
                     if (!task.description.isNullOrBlank()) {
                         TaskDescriptionCard(description = task.description)
                     }
                     
-                    // Botones de acción
+
                     TaskActionButtons(
                         task = task,
                         onToggleCompletion = {
@@ -187,7 +185,7 @@ private fun TaskTitleCard(
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Estado de la tarea
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -230,7 +228,7 @@ private fun TaskInfoCard(
                 fontWeight = FontWeight.Bold
             )
             
-            // Prioridad
+
             TaskInfoRow(
                 icon = Icons.Default.Flag,
                 label = "Prioridad",
@@ -238,7 +236,7 @@ private fun TaskInfoCard(
                 valueColor = Color(task.getPriorityColor())
             )
             
-            // Fecha de vencimiento
+
             task.dueDate?.let { dueDate ->
                 TaskInfoRow(
                     icon = Icons.Default.Today,
@@ -248,7 +246,7 @@ private fun TaskInfoCard(
                 )
             }
             
-            // Recordatorio
+
             task.reminderDateTime?.let { reminder ->
                 TaskInfoRow(
                     icon = Icons.Default.Schedule,
@@ -257,14 +255,14 @@ private fun TaskInfoCard(
                 )
             }
             
-            // Fecha de creación
+
             TaskInfoRow(
                 icon = Icons.Default.Today,
                 label = "Creada",
                 value = formatDateTime(task.createdAt)
             )
             
-            // Fecha de completado
+
             task.completedAt?.let { completedAt ->
                 TaskInfoRow(
                     icon = Icons.Default.CheckCircle,
@@ -333,7 +331,7 @@ private fun TaskActionButtons(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Botón para marcar como completada/pendiente
+
                 Button(
                     onClick = onToggleCompletion,
                     modifier = Modifier.weight(1f)
@@ -349,7 +347,7 @@ private fun TaskActionButtons(
                     )
                 }
                 
-                // Botón para editar
+
                 OutlinedButton(
                     onClick = onEdit,
                     modifier = Modifier.weight(1f)

@@ -11,9 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import kotlinx.datetime.*
 
-/**
- * Componente de diálogo para seleccionar fecha
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
@@ -45,7 +43,7 @@ fun DatePickerDialog(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // DatePicker simple usando Material3
+
                 val datePickerState = rememberDatePickerState(
                     initialSelectedDateMillis = selectedDate.value.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
                 )

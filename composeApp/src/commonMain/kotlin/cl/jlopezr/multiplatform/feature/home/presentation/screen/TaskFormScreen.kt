@@ -53,9 +53,7 @@ import cl.jlopezr.multiplatform.feature.home.presentation.components.DatePickerD
 import cl.jlopezr.multiplatform.feature.home.presentation.components.TimePickerDialog
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Pantalla para crear o editar una tarea
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskFormScreen(
@@ -72,7 +70,7 @@ fun TaskFormScreen(
     
     val isEditMode = taskId != null
     
-    // Efectos para manejar eventos
+
     LaunchedEffect(taskId) {
         if (taskId != null) {
             viewModel.onEvent(TaskFormUiEvent.LoadTask(taskId))
@@ -143,7 +141,7 @@ fun TaskFormScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Título
+
                 OutlinedTextField(
                     value = uiState.title,
                     onValueChange = { viewModel.onEvent(TaskFormUiEvent.TitleChanged(it)) },
@@ -154,7 +152,7 @@ fun TaskFormScreen(
                     singleLine = true
                 )
                 
-                // Descripción
+
                 OutlinedTextField(
                     value = uiState.description,
                     onValueChange = { viewModel.onEvent(TaskFormUiEvent.DescriptionChanged(it)) },
@@ -166,7 +164,7 @@ fun TaskFormScreen(
                     maxLines = 5
                 )
                 
-                // Prioridad
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -208,7 +206,7 @@ fun TaskFormScreen(
                     }
                 }
                 
-                // Fecha de vencimiento con hora
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -265,7 +263,7 @@ fun TaskFormScreen(
                             )
                         }
                         
-                        // Switch para recordatorio
+
                         if (uiState.dueDate != null) {
                             Spacer(modifier = Modifier.height(16.dp))
                             
@@ -317,7 +315,7 @@ fun TaskFormScreen(
                 
                 Spacer(modifier = Modifier.height(24.dp))
                 
-                // Botones de acción
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -346,7 +344,7 @@ fun TaskFormScreen(
             }
         }
         
-        // Diálogos
+
         if (uiState.showDatePicker) {
             TimePickerDialog(
                 onDateTimeSelected = { dateTime ->
@@ -361,9 +359,7 @@ fun TaskFormScreen(
     }
 }
 
-/**
- * Obtiene el nombre para mostrar de la prioridad
- */
+
 private fun getPriorityDisplayName(priority: TaskPriority): String {
     return when (priority) {
         TaskPriority.HIGH -> "Alta"

@@ -11,9 +11,7 @@ import cl.jlopezr.multiplatform.feature.statistics.presentation.state.Statistics
 import cl.jlopezr.multiplatform.feature.statistics.presentation.state.StatisticsPeriod
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel para la pantalla de estadísticas
- */
+
 class StatisticsViewModel(
     private val getTaskStatisticsUseCase: GetTaskStatisticsUseCase
 ) : ViewModel() {
@@ -21,9 +19,7 @@ class StatisticsViewModel(
     var uiState by mutableStateOf(StatisticsUiState())
         private set
     
-    /**
-     * Maneja los eventos de la UI
-     */
+
     fun onEvent(event: StatisticsUiEvent) {
         when (event) {
             is StatisticsUiEvent.LoadStatistics -> loadStatistics()
@@ -33,9 +29,7 @@ class StatisticsViewModel(
         }
     }
     
-    /**
-     * Carga las estadísticas
-     */
+
     private fun loadStatistics() {
         viewModelScope.launch {
             try {
@@ -54,25 +48,19 @@ class StatisticsViewModel(
         }
     }
     
-    /**
-     * Refresca las estadísticas
-     */
+
     private fun refreshStatistics() {
         loadStatistics()
     }
     
-    /**
-     * Cambia el período de estadísticas
-     */
+
     private fun changePeriod(period: StatisticsPeriod) {
         uiState = uiState.copy(selectedPeriod = period)
-        // TODO: Implementar filtrado por período cuando se agregue soporte en el repositorio
+
         loadStatistics()
     }
     
-    /**
-     * Limpia el mensaje de error
-     */
+
     private fun clearError() {
         uiState = uiState.copy(errorMessage = null)
     }

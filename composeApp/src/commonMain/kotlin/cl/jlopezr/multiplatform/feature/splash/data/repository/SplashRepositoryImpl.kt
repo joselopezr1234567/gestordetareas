@@ -10,11 +10,7 @@ import cl.jlopezr.multiplatform.feature.splash.domain.repository.SplashRepositor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-/**
- * Implementación del repositorio para el feature Splash
- * Coordina entre data sources locales y remotos
- * Implementa la lógica de cache y manejo de errores
- */
+
 class SplashRepositoryImpl(
     private val remoteDataSource: SplashRemoteDataSource,
     private val localDataSource: SplashLocalDataSource
@@ -24,7 +20,7 @@ class SplashRepositoryImpl(
         try {
             emit(Resource.Loading())
             
-            // Intentar obtener configuración del servidor
+
             when (val response = remoteDataSource.getSplashConfig()) {
                 is ApiResponse.Success -> {
                     val domainModel = response.data.toDomain()
@@ -53,21 +49,21 @@ class SplashRepositoryImpl(
         try {
             emit(Resource.Loading())
             
-            // Obtener token guardado localmente
+
             val savedToken = localDataSource.getSavedToken()
             
-            // Validar con el servidor
+
             when (val response = remoteDataSource.validateUserSession(savedToken)) {
                 is ApiResponse.Success -> {
                     val isValid = response.data
                     if (!isValid) {
-                        // Si la sesión no es válida, limpiar token local
+
                         localDataSource.clearToken()
                     }
                     emit(Resource.Success(isValid))
                 }
                 is ApiResponse.Error -> {
-                    // En caso de error de red, asumir sesión inválida por seguridad
+
                     localDataSource.clearToken()
                     emit(Resource.Error(
                         message = response.message,

@@ -50,9 +50,7 @@ import cl.jlopezr.multiplatform.feature.home.presentation.viewmodel.TaskListView
 import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.coroutines.delay
 
-/**
- * Pantalla principal que muestra la lista de tareas
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(
@@ -70,18 +68,18 @@ fun TaskListScreen(
     val uiState = viewModel.uiState
     val snackbarHostState = remember { SnackbarHostState() }
     
-    // Estado para el diálogo de acción de tarea
+
     var showTaskActionDialog by remember { mutableStateOf(taskActionId != null) }
     
-    // Estado para el diálogo de notificación
+
     var showNotificationDialog by remember { mutableStateOf(false) }
     
-    // Efectos para manejar eventos
+
     LaunchedEffect(Unit) {
         viewModel.onEvent(TaskListUiEvent.LoadTasks)
     }
     
-    // Efecto para mostrar diálogo después de delay cuando viene de notificación
+
     LaunchedEffect(viewTaskFromNotification) {
         if (viewTaskFromNotification != null) {
             delay(1000) // Delay de 1 segundo
@@ -136,7 +134,7 @@ fun TaskListScreen(
                         actionIconContentColor = Color.White
                     )
                 )
-                // Línea blanca debajo del TopAppBar
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -173,7 +171,7 @@ fun TaskListScreen(
                     .fillMaxSize()
                     .background(Color.Black)
             ) {
-                // Barra de búsqueda y filtros
+
                 TaskSearchBar(
                     searchQuery = uiState.searchQuery,
                     currentFilter = uiState.currentFilter,
@@ -189,7 +187,7 @@ fun TaskListScreen(
                     }
                 )
                 
-                // Lista de tareas
+
                 when {
                     uiState.isLoading && uiState.tasks.isEmpty() -> {
                         // Estado de carga inicial
@@ -204,7 +202,7 @@ fun TaskListScreen(
                     }
                     
                     uiState.tasks.isEmpty() && !uiState.isLoading -> {
-                        // Estado vacío
+
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -229,7 +227,7 @@ fun TaskListScreen(
                     }
                     
                     else -> {
-                        // Lista de tareas
+
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             contentPadding = PaddingValues(bottom = 80.dp),
@@ -256,9 +254,9 @@ fun TaskListScreen(
         }
     }
     
-    // Diálogo de acción de tarea desde notificación
+
     if (showTaskActionDialog && taskActionId != null) {
-        // Buscar la tarea en la lista actual
+
         val task = uiState.tasks.find { it.id == taskActionId }
         
         if (task != null) {
@@ -278,14 +276,14 @@ fun TaskListScreen(
                 }
             )
         } else {
-            // Si no se encuentra la tarea, cerrar el diálogo
+
             showTaskActionDialog = false
         }
     }
     
-    // Diálogo de notificación después del delay
+
     if (showNotificationDialog && viewTaskFromNotification != null) {
-        // Buscar la tarea en la lista actual
+
         val task = uiState.tasks.find { it.id == viewTaskFromNotification }
         
         if (task != null) {
@@ -305,7 +303,7 @@ fun TaskListScreen(
                 }
             )
         } else {
-            // Si no se encuentra la tarea, cerrar el diálogo
+
             showNotificationDialog = false
         }
     }

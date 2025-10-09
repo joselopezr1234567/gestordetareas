@@ -10,10 +10,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-/**
- * Caso de uso para crear una nueva tarea
- * Incluye validaciones de negocio y generación de ID único
- */
+
 class CreateTaskUseCase(
     private val repository: TaskRepository
 ) {
@@ -21,16 +18,7 @@ class CreateTaskUseCase(
         NotificationManagerFactory.create()
     }
     
-    /**
-     * Ejecuta el caso de uso para crear una nueva tarea
-     * 
-     * @param title Título de la tarea (obligatorio)
-     * @param description Descripción de la tarea (opcional)
-     * @param priority Prioridad de la tarea
-     * @param dueDate Fecha límite (opcional)
-     * @param reminderDateTime Fecha y hora del recordatorio (opcional)
-     * @return Result con la tarea creada o error
-     */
+
     suspend operator fun invoke(
         title: String,
         description: String? = null,
@@ -39,7 +27,7 @@ class CreateTaskUseCase(
         reminderDateTime: LocalDateTime? = null
     ): Result<Task> {
         
-        // Validaciones de negocio
+
         if (title.isBlank()) {
             return Result.failure(IllegalArgumentException("El título no puede estar vacío"))
         }
@@ -54,17 +42,17 @@ class CreateTaskUseCase(
         
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         
-        // Validar fecha límite
+
         if (dueDate != null && dueDate < now) {
             return Result.failure(IllegalArgumentException("La fecha límite no puede ser anterior a la fecha actual"))
         }
         
-        // Validar recordatorio
+
         if (reminderDateTime != null && reminderDateTime < now) {
             return Result.failure(IllegalArgumentException("La fecha del recordatorio no puede ser anterior a la fecha actual"))
         }
         
-        // Crear la tarea
+
         val task = Task(
             id = generateTaskId(),
             title = title.trim(),
@@ -80,7 +68,7 @@ class CreateTaskUseCase(
         
         val result = repository.createTask(task)
         
-        // Programar notificación si hay recordatorio
+
         if (result.isSuccess && reminderDateTime != null) {
             println("CreateTaskUseCase: Programando notificación para tarea ${task.id} en $reminderDateTime")
             val notificationResult = notificationManager.scheduleNotification(
@@ -101,9 +89,7 @@ class CreateTaskUseCase(
         return result
     }
     
-    /**
-     * Genera un ID único para la tarea
-     */
+
     private fun generateTaskId(): String {
         return "task_${Clock.System.now().toEpochMilliseconds()}_${(0..9999).random()}"
     }

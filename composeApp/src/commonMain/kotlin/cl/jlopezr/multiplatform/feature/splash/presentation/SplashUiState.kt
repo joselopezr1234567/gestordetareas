@@ -2,10 +2,7 @@ package cl.jlopezr.multiplatform.feature.splash.presentation
 
 import cl.jlopezr.multiplatform.feature.splash.domain.model.SplashConfig
 
-/**
- * Estados de UI para la pantalla Splash
- * Representa todos los posibles estados de la interfaz
- */
+
 data class SplashUiState(
     val isLoading: Boolean = true,
     val splashConfig: SplashConfig? = null,
@@ -20,9 +17,7 @@ data class SplashUiState(
     val currentStep: SplashStep = SplashStep.LOADING_CONFIG
 )
 
-/**
- * Pasos del proceso de splash
- */
+
 enum class SplashStep {
     LOADING_CONFIG,
     CHECKING_VERSION,
@@ -31,9 +26,7 @@ enum class SplashStep {
     ERROR
 }
 
-/**
- * Eventos de UI para la pantalla Splash
- */
+
 sealed class SplashUiEvent {
     object RetryLoading : SplashUiEvent()
     object NavigateToLogin : SplashUiEvent()

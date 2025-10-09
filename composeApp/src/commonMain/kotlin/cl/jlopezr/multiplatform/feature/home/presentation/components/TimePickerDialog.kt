@@ -14,9 +14,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.datetime.*
 
-/**
- * Componente de diálogo para seleccionar fecha y hora del recordatorio
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
@@ -27,7 +25,7 @@ fun TimePickerDialog(
     val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     val initDateTime = initialDateTime ?: currentDateTime
     
-    // Estados para fecha y hora
+
     var selectedYear by remember { mutableIntStateOf(initDateTime.year) }
     var selectedMonth by remember { mutableIntStateOf(initDateTime.monthNumber) }
     var selectedDay by remember { mutableIntStateOf(initDateTime.dayOfMonth) }
@@ -47,7 +45,7 @@ fun TimePickerDialog(
             Column(
                 modifier = Modifier.padding(20.dp)
             ) {
-                // Título
+
                 Text(
                     text = "Configurar Recordatorio",
                     style = MaterialTheme.typography.headlineSmall,
@@ -57,7 +55,7 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // Sección de Fecha
+
                 Text(
                     text = "📅 Seleccionar Fecha",
                     style = MaterialTheme.typography.titleMedium,
@@ -67,12 +65,12 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(12.dp))
                 
-                // Selectores de fecha en fila
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Día
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Día",
@@ -117,7 +115,7 @@ fun TimePickerDialog(
                         }
                     }
                     
-                    // Mes
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Mes",
@@ -168,7 +166,7 @@ fun TimePickerDialog(
                         }
                     }
                     
-                    // Año
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Año",
@@ -212,7 +210,7 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // Sección de Hora
+
                 Text(
                     text = "🕐 Seleccionar Hora",
                     style = MaterialTheme.typography.titleMedium,
@@ -222,13 +220,13 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(12.dp))
                 
-                // Selectores de hora
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Hora
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Hora",
@@ -273,7 +271,7 @@ fun TimePickerDialog(
                         fontWeight = FontWeight.Bold
                     )
                     
-                    // Minutos
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Minutos",
@@ -315,7 +313,7 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // Resumen de la selección
+
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.primaryContainer,
@@ -352,7 +350,7 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // Botones de acción
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)

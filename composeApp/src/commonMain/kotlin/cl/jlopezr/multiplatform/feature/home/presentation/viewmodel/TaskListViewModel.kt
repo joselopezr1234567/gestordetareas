@@ -15,10 +15,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel para la pantalla de lista de tareas
- * Implementa el patrón UDF/MVI para manejo unidireccional de estado
- */
+
 class TaskListViewModel(
     private val taskUseCases: TaskUseCases
 ) : ViewModel() {
@@ -33,9 +30,7 @@ class TaskListViewModel(
         loadTasks()
     }
     
-    /**
-     * Maneja los eventos UI de la pantalla
-     */
+
     fun onEvent(event: TaskListUiEvent) {
         when (event) {
             is TaskListUiEvent.LoadTasks -> loadTasks()
@@ -57,14 +52,12 @@ class TaskListViewModel(
             is TaskListUiEvent.DeleteCompletedTasks -> deleteCompletedTasks()
             is TaskListUiEvent.DismissError -> dismissError()
             is TaskListUiEvent.OnSwipeRefresh -> onSwipeRefresh()
-            // Los eventos de navegación se manejan en la UI
+
             else -> { /* Eventos de navegación manejados en la UI */ }
         }
     }
     
-    /**
-     * Carga las tareas aplicando filtros y ordenamiento
-     */
+
     private fun loadTasks() {
         loadTasksJob?.cancel()
         
@@ -114,17 +107,13 @@ class TaskListViewModel(
         }
     }
     
-    /**
-     * Actualiza las tareas con indicador de refresh
-     */
+
     private fun refreshTasks() {
         uiState = uiState.copy(isRefreshing = true)
         loadTasks()
     }
     
-    /**
-     * Actualiza la consulta de búsqueda con debounce
-     */
+
     private fun updateSearchQuery(query: String) {
         uiState = uiState.copy(searchQuery = query)
         
@@ -135,9 +124,7 @@ class TaskListViewModel(
         }
     }
     
-    /**
-     * Alterna el estado de búsqueda
-     */
+
     private fun toggleSearch() {
         uiState = uiState.copy(
             isSearchActive = !uiState.isSearchActive,
@@ -148,9 +135,7 @@ class TaskListViewModel(
         }
     }
     
-    /**
-     * Limpia la búsqueda
-     */
+
     private fun clearSearch() {
         uiState = uiState.copy(
             searchQuery = "",
@@ -159,9 +144,7 @@ class TaskListViewModel(
         loadTasks()
     }
     
-    /**
-     * Actualiza el filtro actual
-     */
+
     private fun updateFilter(filter: cl.jlopezr.multiplatform.feature.home.domain.model.TaskFilter) {
         uiState = uiState.copy(
             currentFilter = filter,
@@ -170,23 +153,17 @@ class TaskListViewModel(
         loadTasks()
     }
     
-    /**
-     * Muestra el diálogo de filtros
-     */
+
     private fun showFilterDialog() {
         uiState = uiState.copy(showFilterDialog = true)
     }
     
-    /**
-     * Oculta el diálogo de filtros
-     */
+
     private fun hideFilterDialog() {
         uiState = uiState.copy(showFilterDialog = false)
     }
     
-    /**
-     * Actualiza el orden de clasificación
-     */
+
     private fun updateSortOrder(sortOrder: cl.jlopezr.multiplatform.feature.home.domain.model.TaskSortOrder) {
         uiState = uiState.copy(
             currentSortOrder = sortOrder,
@@ -195,28 +172,22 @@ class TaskListViewModel(
         loadTasks()
     }
     
-    /**
-     * Muestra el diálogo de ordenamiento
-     */
+
     private fun showSortDialog() {
         uiState = uiState.copy(showSortDialog = true)
     }
     
-    /**
-     * Oculta el diálogo de ordenamiento
-     */
+
     private fun hideSortDialog() {
         uiState = uiState.copy(showSortDialog = false)
     }
     
-    /**
-     * Alterna el estado de completado de una tarea
-     */
+
     private fun toggleTaskCompletion(taskId: String) {
         viewModelScope.launch {
             taskUseCases.toggleTaskCompletion(taskId)
                 .onSuccess {
-                    // Las tareas se actualizan automáticamente por el Flow
+
                 }
                 .onFailure { error ->
                     uiState = uiState.copy(
@@ -226,9 +197,7 @@ class TaskListViewModel(
         }
     }
     
-    /**
-     * Elimina una tarea específica
-     */
+
     private fun deleteTask(taskId: String) {
         viewModelScope.launch {
             taskUseCases.deleteTask(taskId)
@@ -243,9 +212,7 @@ class TaskListViewModel(
         }
     }
     
-    /**
-     * Muestra la confirmación de eliminación
-     */
+
     private fun showDeleteConfirmation(taskId: String) {
         uiState = uiState.copy(
             selectedTaskId = taskId,
@@ -253,9 +220,7 @@ class TaskListViewModel(
         )
     }
     
-    /**
-     * Oculta la confirmación de eliminación
-     */
+
     private fun hideDeleteConfirmation() {
         uiState = uiState.copy(
             selectedTaskId = null,
@@ -263,9 +228,7 @@ class TaskListViewModel(
         )
     }
     
-    /**
-     * Confirma la eliminación de la tarea seleccionada
-     */
+
     private fun confirmDeleteTask() {
         uiState.selectedTaskId?.let { taskId ->
             deleteTask(taskId)
@@ -273,14 +236,12 @@ class TaskListViewModel(
         }
     }
     
-    /**
-     * Elimina todas las tareas completadas
-     */
+
     private fun deleteCompletedTasks() {
         viewModelScope.launch {
             try {
                 // TODO: Implementar eliminación de tareas completadas
-                // Por ahora solo mostramos un mensaje
+
                 uiState = uiState.copy(
                     error = "Función de eliminar tareas completadas no implementada aún"
                 )
@@ -292,16 +253,12 @@ class TaskListViewModel(
         }
     }
     
-    /**
-     * Descarta el error actual
-     */
+
     private fun dismissError() {
         uiState = uiState.copy(error = null)
     }
     
-    /**
-     * Maneja el swipe to refresh
-     */
+
     private fun onSwipeRefresh() {
         refreshTasks()
     }

@@ -8,10 +8,7 @@ import cl.jlopezr.multiplatform.feature.login.data.datasource.local.LoginLocalDa
 import cl.jlopezr.multiplatform.feature.login.data.datasource.remote.LoginRemoteDataSource
 import org.koin.dsl.module
 
-/**
- * Módulo de red y data sources
- * Configura las dependencias relacionadas con la red y almacenamiento
- */
+
 val networkModule = module {
     
     // Core Network & Storage

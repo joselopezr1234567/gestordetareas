@@ -10,10 +10,7 @@ import cl.jlopezr.multiplatform.feature.drawer.presentation.AppDrawerViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-/**
- * Módulo de ViewModels
- * Configura las dependencias de los ViewModels usando Koin Compose
- */
+
 val viewModelModule = module {
     
     // Task ViewModels
@@ -29,7 +26,7 @@ val viewModelModule = module {
         TaskDetailViewModel(taskUseCases = get()) 
     }
     
-    // Splash ViewModel
+
     viewModel { 
         SplashViewModel(
             loadInitialDataUseCase = get(),
@@ -38,7 +35,7 @@ val viewModelModule = module {
         ) 
     }
     
-    // Login ViewModel
+
     viewModel { 
         LoginViewModel(
             loginUseCase = get(),
@@ -47,7 +44,7 @@ val viewModelModule = module {
         ) 
     }
     
-    // Settings ViewModel
+
     viewModel { 
         SettingsViewModel(
             themeManager = get(),
@@ -55,7 +52,7 @@ val viewModelModule = module {
         ) 
     }
     
-    // Drawer ViewModel
+
     viewModel { 
         AppDrawerViewModel(
             logoutUseCase = get()

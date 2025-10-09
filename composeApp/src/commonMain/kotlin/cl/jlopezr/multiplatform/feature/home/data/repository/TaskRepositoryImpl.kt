@@ -18,10 +18,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlinx.datetime.toLocalDateTime
 
-/**
- * Implementación del repositorio de tareas
- * Conecta la capa de dominio con la capa de datos usando DataStore
- */
+
 class TaskRepositoryImpl(
     private val localDataSource: TaskLocalDataSource
 ) : TaskRepository {
@@ -40,14 +37,14 @@ class TaskRepositoryImpl(
         return getAllTasks().map { tasks ->
             var filteredTasks = tasks
             
-            // Aplicar filtro
+
             filteredTasks = when (filter) {
                 TaskFilter.ALL -> filteredTasks
                 TaskFilter.PENDING -> filteredTasks.filter { !it.isCompleted }
                 TaskFilter.COMPLETED -> filteredTasks.filter { it.isCompleted }
             }
             
-            // Aplicar búsqueda
+
             if (searchQuery.isNotBlank()) {
                 filteredTasks = filteredTasks.filter { task ->
                     task.title.contains(searchQuery, ignoreCase = true) ||
@@ -55,7 +52,7 @@ class TaskRepositoryImpl(
                 }
             }
             
-            // Aplicar ordenamiento
+
             when (sortOrder) {
                 TaskSortOrder.CREATED_DATE_DESC -> filteredTasks.sortedByDescending { it.createdAt }
                 TaskSortOrder.CREATED_DATE_ASC -> filteredTasks.sortedBy { it.createdAt }
@@ -91,7 +88,7 @@ class TaskRepositoryImpl(
     
     override suspend fun updateTask(task: Task): Result<Task> {
         return try {
-            // Verificar que la tarea existe
+
             val existingTask = localDataSource.getTaskById(task.id)
             if (existingTask == null) {
                 Result.failure(IllegalArgumentException("Task with id ${task.id} not found"))
@@ -106,7 +103,7 @@ class TaskRepositoryImpl(
     
     override suspend fun deleteTask(id: String): Result<Unit> {
         return try {
-            // Verificar que la tarea existe
+
             val existingTask = localDataSource.getTaskById(id)
             if (existingTask == null) {
                 Result.failure(IllegalArgumentException("Task with id $id not found"))

@@ -11,10 +11,7 @@ import cl.jlopezr.multiplatform.feature.login.domain.repository.LoginRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-/**
- * Implementación del repositorio de Login (sin tokens)
- * Coordina entre data sources locales y remotos
- */
+
 class LoginRepositoryImpl(
     private val remoteDataSource: LoginRemoteDataSource,
     private val localDataSource: LoginLocalDataSource
@@ -39,7 +36,7 @@ class LoginRepositoryImpl(
                     val loginResult = response.data.toDomain()
                     
                     if (loginResult.isSuccessful()) {
-                        // Guardar datos de sesión localmente
+
                         localDataSource.saveUserEmail(email)
                         loginResult.user?.let { user ->
                             localDataSource.saveUserName(user.name)
@@ -70,12 +67,12 @@ class LoginRepositoryImpl(
             
             when (val response = remoteDataSource.logout()) {
                 is ApiResponse.Success -> {
-                    // Limpiar datos locales
+
                     localDataSource.clearSession()
                     emit(Resource.Success(true))
                 }
                 is ApiResponse.Error -> {
-                    // Aunque falle el logout remoto, limpiamos los datos locales
+
                     localDataSource.clearSession()
                     emit(Resource.Success(true))
                 }
@@ -84,7 +81,7 @@ class LoginRepositoryImpl(
                 }
             }
         } catch (e: Exception) {
-            // En caso de error, limpiamos los datos locales de todas formas
+
             localDataSource.clearSession()
             emit(Resource.Success(true))
         }

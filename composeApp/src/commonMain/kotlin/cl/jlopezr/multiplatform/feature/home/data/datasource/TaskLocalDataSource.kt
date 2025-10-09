@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-/**
- * Data source local para gestionar tareas usando DataStore
- * Maneja la persistencia local de las tareas en formato JSON
- */
+
 class TaskLocalDataSource(
     private val dataStore: DataStore<Preferences>
 ) {
@@ -29,9 +26,7 @@ class TaskLocalDataSource(
         encodeDefaults = true
     }
     
-    /**
-     * Obtiene todas las tareas como Flow
-     */
+
     fun getAllTasks(): Flow<List<TaskDto>> {
         return dataStore.data.map { preferences ->
             val tasksJson = preferences[TASKS_KEY] ?: ""
@@ -50,9 +45,7 @@ class TaskLocalDataSource(
         }
     }
     
-    /**
-     * Guarda una lista de tareas
-     */
+
     suspend fun saveTasks(tasks: List<TaskDto>) {
         try {
             dataStore.edit { preferences ->
@@ -62,13 +55,11 @@ class TaskLocalDataSource(
             }
         } catch (e: Exception) {
             println("Error saving tasks to DataStore: ${e.message}")
-            throw e // Re-lanzar para que el repositorio pueda manejar el error
+            throw e
         }
     }
     
-    /**
-     * Obtiene una tarea específica por ID
-     */
+
     suspend fun getTaskById(id: String): TaskDto? {
         return dataStore.data.map { preferences ->
             val tasksJson = preferences[TASKS_KEY] ?: ""
@@ -84,9 +75,7 @@ class TaskLocalDataSource(
         }.first()
     }
     
-    /**
-     * Agrega una nueva tarea
-     */
+
     suspend fun addTask(task: TaskDto) {
         dataStore.edit { preferences ->
             val tasksJson = preferences[TASKS_KEY] ?: ""
@@ -106,9 +95,7 @@ class TaskLocalDataSource(
         }
     }
     
-    /**
-     * Actualiza una tarea existente
-     */
+
     suspend fun updateTask(task: TaskDto) {
         try {
             dataStore.edit { preferences ->
@@ -128,7 +115,7 @@ class TaskLocalDataSource(
                     if (it.id == task.id) task else it 
                 }
                 
-                // Verificar que la tarea fue encontrada y actualizada
+
                 val taskFound = currentTasks.any { it.id == task.id }
                 if (!taskFound) {
                     println("Warning: Task with id ${task.id} not found for update")
@@ -143,9 +130,7 @@ class TaskLocalDataSource(
         }
     }
     
-    /**
-     * Elimina una tarea por ID
-     */
+
     suspend fun deleteTask(id: String) {
         dataStore.edit { preferences ->
             val tasksJson = preferences[TASKS_KEY] ?: ""
@@ -165,9 +150,7 @@ class TaskLocalDataSource(
         }
     }
     
-    /**
-     * Elimina todas las tareas completadas
-     */
+
     suspend fun deleteCompletedTasks() {
         dataStore.edit { preferences ->
             val tasksJson = preferences[TASKS_KEY] ?: ""
@@ -187,9 +170,7 @@ class TaskLocalDataSource(
         }
     }
     
-    /**
-     * Limpia todas las tareas (útil para testing o reset)
-     */
+
     suspend fun clearAllTasks() {
         dataStore.edit { preferences ->
             preferences.remove(TASKS_KEY)

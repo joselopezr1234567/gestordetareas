@@ -5,10 +5,7 @@ import cl.jlopezr.multiplatform.feature.home.domain.model.TaskPriority
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
-/**
- * Data Transfer Object para tareas
- * Se usa para serializar/deserializar tareas en DataStore
- */
+
 @Serializable
 data class TaskDto(
     val id: String,
@@ -23,9 +20,7 @@ data class TaskDto(
     val reminderDateTime: String? = null // ISO string format
 )
 
-/**
- * Extensiones para convertir entre Task y TaskDto
- */
+
 fun Task.toDto(): TaskDto {
     return TaskDto(
         id = id,
@@ -56,9 +51,7 @@ fun TaskDto.toDomain(): Task {
     )
 }
 
-/**
- * Lista de tareas serializable para DataStore
- */
+
 @Serializable
 data class TaskListDto(
     val tasks: List<TaskDto> = emptyList()

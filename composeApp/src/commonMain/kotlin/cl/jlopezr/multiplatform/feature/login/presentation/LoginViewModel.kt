@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel para la pantalla de Login
- */
+
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
@@ -23,9 +21,7 @@ class LoginViewModel(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    /**
-     * Maneja los eventos de UI
-     */
+
     fun onEvent(event: LoginUiEvent) {
         when (event) {
             is LoginUiEvent.EmailChanged -> {
@@ -72,9 +68,7 @@ class LoginViewModel(
         }
     }
 
-    /**
-     * Valida el email en tiempo real
-     */
+
     private fun validateEmail(email: String) {
         if (email.isNotBlank()) {
             val result = validateEmailUseCase(email)
@@ -86,9 +80,7 @@ class LoginViewModel(
         }
     }
 
-    /**
-     * Valida la contraseña en tiempo real
-     */
+
     private fun validatePassword(password: String) {
         if (password.isNotBlank()) {
             val result = validatePasswordUseCase(password)
@@ -100,13 +92,11 @@ class LoginViewModel(
         }
     }
 
-    /**
-     * Realiza el login del usuario
-     */
+
     private fun performLogin() {
         val currentState = _uiState.value
         
-        // Validar campos antes de enviar
+
         val emailValidation = validateEmailUseCase(currentState.email)
         val passwordValidation = validatePasswordUseCase(currentState.password)
         

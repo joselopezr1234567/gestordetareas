@@ -44,9 +44,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-/**
- * Componente que representa un elemento de tarea en la lista
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskItem(
@@ -78,11 +76,11 @@ fun TaskItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             
-            // Contenido de la tarea
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // Título
+
                 Text(
                     text = task.title,
                     style = MaterialTheme.typography.bodyLarge.copy(
@@ -102,7 +100,7 @@ fun TaskItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 
-                // Descripción (si existe)
+
                 if (!task.description.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -118,15 +116,15 @@ fun TaskItem(
                     )
                 }
                 
-                // Información adicional (prioridad, fecha de vencimiento)
+
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Indicador de prioridad
+
                     PriorityIndicator(priority = task.priority)
                     
-                    // Fecha de vencimiento
+
                     task.dueDate?.let { dueDate ->
                         Spacer(modifier = Modifier.width(8.dp))
                         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
@@ -145,7 +143,7 @@ fun TaskItem(
                 }
             }
             
-            // Botones de acción
+
             Row {
                 IconButton(
                     onClick = { onEdit(task.id) }
@@ -170,7 +168,7 @@ fun TaskItem(
         }
     }
     
-    // Diálogo de confirmación para eliminar
+
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -199,9 +197,7 @@ fun TaskItem(
 
 }
 
-/**
- * Indicador visual de la prioridad de la tarea
- */
+
 @Composable
 private fun PriorityIndicator(
     priority: TaskPriority,

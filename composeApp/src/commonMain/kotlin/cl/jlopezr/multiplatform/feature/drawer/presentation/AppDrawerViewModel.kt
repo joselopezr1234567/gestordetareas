@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel para el menú lateral de la aplicación
- */
+
 class AppDrawerViewModel(
     private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
@@ -19,9 +17,7 @@ class AppDrawerViewModel(
     private val _uiState = MutableStateFlow(AppDrawerUiState())
     val uiState: StateFlow<AppDrawerUiState> = _uiState.asStateFlow()
     
-    /**
-     * Ejecuta el logout del usuario
-     */
+
     fun logout(onLogoutComplete: () -> Unit) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoggingOut = true)
@@ -49,17 +45,13 @@ class AppDrawerViewModel(
         }
     }
     
-    /**
-     * Limpia el mensaje de error
-     */
+
     fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = null)
     }
 }
 
-/**
- * Estado de la UI del drawer
- */
+
 data class AppDrawerUiState(
     val isLoggingOut: Boolean = false,
     val logoutSuccess: Boolean = false,

@@ -10,10 +10,7 @@ import cl.jlopezr.multiplatform.feature.home.presentation.event.TaskDetailUiEven
 import cl.jlopezr.multiplatform.feature.home.presentation.state.TaskDetailUiState
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel para la pantalla de detalle de tarea
- * Implementa el patrón UDF/MVI para manejo unidireccional de estado
- */
+
 class TaskDetailViewModel(
     private val taskUseCases: TaskUseCases
 ) : ViewModel() {
@@ -21,9 +18,7 @@ class TaskDetailViewModel(
     var uiState by mutableStateOf(TaskDetailUiState())
         private set
     
-    /**
-     * Maneja los eventos UI de la pantalla
-     */
+
     fun onEvent(event: TaskDetailUiEvent) {
         when (event) {
             is TaskDetailUiEvent.LoadTask -> loadTask(event.taskId)
@@ -33,9 +28,7 @@ class TaskDetailViewModel(
         }
     }
     
-    /**
-     * Carga los detalles de una tarea específica
-     */
+
     private fun loadTask(taskId: String) {
         if (taskId.isBlank()) {
             uiState = uiState.copy(
@@ -71,10 +64,7 @@ class TaskDetailViewModel(
             }
         }
     }
-    
-    /**
-     * Alterna el estado de completado de la tarea
-     */
+
     private fun toggleTaskCompletion() {
         val currentTask = uiState.task ?: return
         
@@ -100,16 +90,12 @@ class TaskDetailViewModel(
         }
     }
     
-    /**
-     * Maneja la navegación de vuelta
-     */
+
     private fun onNavigationHandled() {
         uiState = uiState.copy(navigateBack = false)
     }
     
-    /**
-     * Descarta el error actual
-     */
+
     private fun dismissError() {
         uiState = uiState.copy(error = null)
     }

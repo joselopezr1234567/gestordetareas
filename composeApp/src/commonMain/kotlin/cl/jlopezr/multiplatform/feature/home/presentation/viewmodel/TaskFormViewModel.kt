@@ -17,10 +17,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlinx.datetime.toLocalDateTime
 
-/**
- * ViewModel para la pantalla de crear/editar tarea
- * Implementa el patrón UDF/MVI para manejo unidireccional de estado
- */
+
 class TaskFormViewModel(
     private val taskUseCases: TaskUseCases
 ) : ViewModel() {
@@ -28,9 +25,7 @@ class TaskFormViewModel(
     var uiState by mutableStateOf(TaskFormUiState())
         private set
     
-    /**
-     * Maneja los eventos UI de la pantalla
-     */
+
     fun onEvent(event: TaskFormUiEvent) {
         when (event) {
             is TaskFormUiEvent.LoadTask -> loadTask(event.taskId)
@@ -62,9 +57,7 @@ class TaskFormViewModel(
         }
     }
     
-    /**
-     * Carga una tarea existente para edición
-     */
+
     private fun loadTask(taskId: String) {
         uiState = uiState.copy(isLoading = true, error = null)
         
@@ -88,49 +81,37 @@ class TaskFormViewModel(
         }
     }
     
-    /**
-     * Actualiza el título y valida
-     */
+
     private fun updateTitle(title: String) {
         uiState = uiState.copy(title = title, titleError = null)
         validateTitle()
     }
     
-    /**
-     * Actualiza la descripción y valida
-     */
+
     private fun updateDescription(description: String) {
         uiState = uiState.copy(description = description, descriptionError = null)
         validateDescription()
     }
     
-    /**
-     * Actualiza la prioridad
-     */
+
     private fun updatePriority(priority: TaskPriority) {
         uiState = uiState.copy(priority = priority, showPriorityDialog = false)
     }
     
-    /**
-     * Actualiza la fecha de vencimiento y valida
-     */
+
     private fun updateDueDate(date: LocalDateTime?) {
         uiState = uiState.copy(dueDate = date, dueDateError = null, showDatePicker = false)
         validateDueDate()
         validateReminder() // Re-validar recordatorio si existe
     }
     
-    /**
-     * Actualiza la fecha y hora del recordatorio y valida
-     */
+
     private fun updateReminderDateTime(dateTime: LocalDateTime?) {
         uiState = uiState.copy(reminderDateTime = dateTime, reminderError = null)
         validateReminder()
     }
     
-    /**
-     * Valida el título
-     */
+
     private fun validateTitle() {
         val title = uiState.title.trim()
         uiState = uiState.copy(
@@ -143,9 +124,7 @@ class TaskFormViewModel(
         )
     }
     
-    /**
-     * Valida la descripción
-     */
+
     private fun validateDescription() {
         val description = uiState.description.trim()
         uiState = uiState.copy(
@@ -156,9 +135,7 @@ class TaskFormViewModel(
         )
     }
     
-    /**
-     * Valida la fecha de vencimiento
-     */
+
     private fun validateDueDate() {
         val dueDate = uiState.dueDate
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
@@ -171,9 +148,7 @@ class TaskFormViewModel(
         )
     }
     
-    /**
-     * Valida el recordatorio
-     */
+
     private fun validateReminder() {
         val reminder = uiState.reminderDateTime
         val dueDate = uiState.dueDate
@@ -190,9 +165,7 @@ class TaskFormViewModel(
         )
     }
     
-    /**
-     * Valida todo el formulario
-     */
+
     private fun validateForm() {
         validateTitle()
         validateDescription()
@@ -200,51 +173,37 @@ class TaskFormViewModel(
         validateReminder()
     }
     
-    /**
-     * Muestra el selector de fecha
-     */
+
     private fun showDatePicker() {
         uiState = uiState.copy(showDatePicker = true)
     }
     
-    /**
-     * Oculta el selector de fecha
-     */
+
     private fun hideDatePicker() {
         uiState = uiState.copy(showDatePicker = false)
     }
     
-    /**
-     * Muestra el diálogo de prioridad
-     */
+
     private fun showPriorityDialog() {
         uiState = uiState.copy(showPriorityDialog = true)
     }
     
-    /**
-     * Oculta el diálogo de prioridad
-     */
+
     private fun hidePriorityDialog() {
         uiState = uiState.copy(showPriorityDialog = false)
     }
     
-    /**
-     * Muestra el diálogo de descartar cambios
-     */
+
     private fun showDiscardDialog() {
         uiState = uiState.copy(showDiscardDialog = true)
     }
     
-    /**
-     * Oculta el diálogo de descartar cambios
-     */
+
     private fun hideDiscardDialog() {
         uiState = uiState.copy(showDiscardDialog = false)
     }
     
-    /**
-     * Guarda la tarea
-     */
+
     private fun saveTask() {
         validateForm()
         
@@ -290,9 +249,7 @@ class TaskFormViewModel(
         }
     }
     
-    /**
-     * Descarta los cambios y navega hacia atrás
-     */
+
     private fun discardChanges() {
         uiState = uiState.copy(
             showDiscardDialog = false,
@@ -300,9 +257,7 @@ class TaskFormViewModel(
         )
     }
     
-    /**
-     * Navega hacia atrás
-     */
+
     private fun navigateBack() {
         if (uiState.hasUnsavedChanges) {
             showDiscardDialog()
@@ -311,45 +266,33 @@ class TaskFormViewModel(
         }
     }
     
-    /**
-     * Limpia la fecha de vencimiento
-     */
+
     private fun clearDueDate() {
         uiState = uiState.copy(dueDate = null, dueDateError = null)
-        validateReminder() // Re-validar recordatorio
+        validateReminder()
     }
     
-    /**
-     * Limpia el recordatorio
-     */
+
     private fun clearReminder() {
         uiState = uiState.copy(reminderDateTime = null, reminderError = null)
     }
     
-    /**
-     * Descarta el error actual
-     */
+
     private fun dismissError() {
         uiState = uiState.copy(error = null)
     }
     
-    /**
-     * Maneja el botón de retroceso
-     */
+
     private fun onBackPressed() {
         navigateBack()
     }
     
-    /**
-     * Marca la navegación como manejada
-     */
+
     private fun onNavigationHandled() {
         uiState = uiState.copy(navigateBack = false)
     }
     
-    /**
-     * Marca el guardado como manejado
-     */
+
     private fun onTaskSavedHandled() {
         uiState = uiState.copy(taskSaved = false)
     }

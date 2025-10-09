@@ -2,9 +2,7 @@ package cl.jlopezr.multiplatform.feature.login.presentation
 
 import cl.jlopezr.multiplatform.feature.login.domain.model.User
 
-/**
- * Estados de UI para la pantalla de Login
- */
+
 data class LoginUiState(
     val email: String = "",
     val password: String = "",

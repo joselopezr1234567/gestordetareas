@@ -1,8 +1,6 @@
 package cl.jlopezr.multiplatform.feature.login.data.model
 
-/**
- * DTO para la respuesta del login (sin tokens)
- */
+
 data class LoginResponseDto(
     val success: Boolean,
     val user: UserDto?,

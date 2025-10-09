@@ -31,10 +31,7 @@ private val LightColorScheme = lightColorScheme(
     error = ErrorColor
 )
 
-/**
- * Tema principal de la aplicación
- * Maneja automáticamente el cambio entre tema claro y oscuro
- */
+
 @Composable
 fun AgendaTareasTheme(
     themeManager: ThemeManager = koinInject(),
@@ -43,7 +40,7 @@ fun AgendaTareasTheme(
     val currentTheme by themeManager.currentTheme.collectAsState()
     val isDarkTheme by themeManager.isDarkTheme.collectAsState()
     
-    // Determinar si usar tema oscuro
+
     val useDarkTheme = when (currentTheme) {
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
@@ -63,9 +60,7 @@ fun AgendaTareasTheme(
     )
 }
 
-/**
- * Extensiones para acceder a colores personalizados
- */
+
 val ColorScheme.taskPriorityHigh: Color
     @Composable get() = if (isSystemInDarkTheme()) TaskPriorityHighDark else TaskPriorityHigh
 

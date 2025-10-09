@@ -17,10 +17,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import cl.jlopezr.multiplatform.feature.home.domain.model.Task
 
-/**
- * Dialog component for handling task actions from notifications
- * Allows users to complete or edit a task directly from the notification
- */
+
 @Composable
 fun TaskActionDialog(
     task: Task?,
@@ -72,7 +69,7 @@ fun TaskActionDialog(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Task information
+
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
@@ -101,7 +98,7 @@ fun TaskActionDialog(
                             
                             Spacer(modifier = Modifier.height(8.dp))
                             
-                            // Priority indicator
+
                             Surface(
                                 color = when (task.priority.name) {
                                     "HIGH" -> MaterialTheme.colorScheme.errorContainer
@@ -126,7 +123,7 @@ fun TaskActionDialog(
                     
                     Spacer(modifier = Modifier.height(24.dp))
                     
-                    // Action message
+
                     Text(
                         text = "What would you like to do with this task?",
                         style = MaterialTheme.typography.bodyLarge,
@@ -136,12 +133,12 @@ fun TaskActionDialog(
                     
                     Spacer(modifier = Modifier.height(24.dp))
                     
-                    // Action buttons
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Complete task button
+
                         Button(
                             onClick = {
                                 onCompleteTask()
@@ -161,7 +158,7 @@ fun TaskActionDialog(
                             Text("Complete")
                         }
                         
-                        // Edit task button
+
                         OutlinedButton(
                             onClick = {
                                 onEditTask()
@@ -181,7 +178,7 @@ fun TaskActionDialog(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Dismiss button
+
                     TextButton(
                         onClick = onDismiss,
                         modifier = Modifier.fillMaxWidth()

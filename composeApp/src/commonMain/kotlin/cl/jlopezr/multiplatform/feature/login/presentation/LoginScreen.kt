@@ -46,9 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Pantalla de Login con diseño consistente (fondo negro, fuente especial)
- */
+
 @Composable
 fun LoginScreen(
     onNavigateToHome: () -> Unit,

@@ -41,10 +41,7 @@ import cl.jlopezr.multiplatform.feature.splash.presentation.SplashUiState
 import cl.jlopezr.multiplatform.feature.splash.presentation.SplashViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Pantalla principal del Splash
- * Implementa una UI moderna con animaciones y estados de carga
- */
+
 @Composable
 fun SplashScreen(
     onNavigateToLogin: () -> Unit,
@@ -53,7 +50,7 @@ fun SplashScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    // Efectos de navegación
+
     LaunchedEffect(uiState.shouldNavigateToLogin) {
         if (uiState.shouldNavigateToLogin) {
             onNavigateToLogin()
@@ -102,9 +99,7 @@ fun SplashScreen(
     }
 }
 
-/**
- * Contenido principal del splash durante la carga
- */
+
 @Composable
 private fun SplashContent(
     uiState: SplashUiState,
@@ -129,7 +124,7 @@ private fun SplashContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Nombre de la aplicación con fuente especial
+
         Text(
             text = "𝖏𝖑𝖔𝖕𝖊𝖟𝖗",
             fontSize = 48.sp,
@@ -140,7 +135,7 @@ private fun SplashContent(
         
         Spacer(modifier = Modifier.height(48.dp))
         
-        // Indicador de progreso
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -165,9 +160,7 @@ private fun SplashContent(
     }
 }
 
-/**
- * Contenido para modo de mantenimiento
- */
+
 @Composable
 private fun MaintenanceContent(
     config: cl.jlopezr.multiplatform.feature.splash.domain.model.SplashConfig?,
@@ -212,9 +205,7 @@ private fun MaintenanceContent(
     }
 }
 
-/**
- * Contenido para actualización requerida
- */
+
 @Composable
 private fun UpdateRequiredContent(
     onUpdateClick: () -> Unit,
@@ -268,9 +259,7 @@ private fun UpdateRequiredContent(
     }
 }
 
-/**
- * Contenido para errores
- */
+
 @Composable
 private fun ErrorContent(
     message: String,
@@ -338,9 +327,7 @@ private fun ErrorContent(
     }
 }
 
-/**
- * Obtiene el mensaje correspondiente al paso actual
- */
+
 private fun getStepMessage(step: SplashStep): String {
     return when (step) {
         SplashStep.LOADING_CONFIG -> "Cargando configuración..."

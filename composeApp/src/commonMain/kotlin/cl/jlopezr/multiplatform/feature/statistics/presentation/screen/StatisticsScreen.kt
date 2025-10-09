@@ -18,9 +18,7 @@ import cl.jlopezr.multiplatform.feature.statistics.presentation.event.Statistics
 import cl.jlopezr.multiplatform.feature.statistics.presentation.viewmodel.StatisticsViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Pantalla de estadísticas de tareas
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsScreen(
@@ -29,7 +27,7 @@ fun StatisticsScreen(
 ) {
     val uiState = viewModel.uiState
     
-    // Cargar estadísticas al iniciar
+
     LaunchedEffect(Unit) {
         viewModel.onEvent(StatisticsUiEvent.LoadStatistics)
     }
@@ -39,7 +37,7 @@ fun StatisticsScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Header
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -99,7 +97,7 @@ private fun StatisticsContent(
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Resumen general
+
         item {
             StatisticsCard(
                 title = "Resumen General",
@@ -139,7 +137,7 @@ private fun StatisticsContent(
             }
         }
         
-        // Productividad
+
         item {
             StatisticsCard(
                 title = "Productividad",
@@ -148,7 +146,7 @@ private fun StatisticsContent(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Tasa de completitud
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -177,7 +175,7 @@ private fun StatisticsContent(
                         )
                     }
                     
-                    // Barra de progreso
+
                     LinearProgressIndicator(
                         progress = { uiState.statistics.completionRate / 100f },
                         modifier = Modifier.fillMaxWidth(),
@@ -202,7 +200,7 @@ private fun StatisticsContent(
             }
         }
         
-        // Botón de actualizar
+
         item {
             Button(
                 onClick = onRefresh,

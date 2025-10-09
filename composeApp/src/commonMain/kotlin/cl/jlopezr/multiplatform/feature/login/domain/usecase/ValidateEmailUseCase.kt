@@ -1,15 +1,9 @@
 package cl.jlopezr.multiplatform.feature.login.domain.usecase
 
-/**
- * Caso de uso para validar el formato del email
- */
+
 class ValidateEmailUseCase {
     
-    /**
-     * Valida el formato del email
-     * @param email Email a validar
-     * @return Resultado de la validación
-     */
+
     operator fun invoke(email: String): ValidationResult {
         if (email.isBlank()) {
             return ValidationResult(
@@ -30,9 +24,7 @@ class ValidateEmailUseCase {
     }
 }
 
-/**
- * Resultado de una validación
- */
+
 data class ValidationResult(
     val successful: Boolean,
     val errorMessage: String? = null

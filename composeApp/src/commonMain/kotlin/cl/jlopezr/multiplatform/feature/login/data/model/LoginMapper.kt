@@ -3,9 +3,7 @@ package cl.jlopezr.multiplatform.feature.login.data.model
 import cl.jlopezr.multiplatform.feature.login.domain.model.LoginResult
 import cl.jlopezr.multiplatform.feature.login.domain.model.User
 
-/**
- * Mapper para convertir entre DTOs y modelos de dominio del Login
- */
+
 object LoginMapper {
     
     fun LoginResponseDto.toDomain(): LoginResult {

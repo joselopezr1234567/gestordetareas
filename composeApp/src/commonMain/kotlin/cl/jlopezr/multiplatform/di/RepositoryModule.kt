@@ -11,27 +11,24 @@ import cl.jlopezr.multiplatform.feature.login.data.repository.LoginRepositoryImp
 import cl.jlopezr.multiplatform.feature.login.domain.repository.LoginRepository
 import org.koin.dsl.module
 
-/**
- * Módulo de repositorios
- * Configura las implementaciones de los repositorios del dominio
- */
+
 val repositoryModule = module {
     
-    // DataStore
+
     single { DataStoreFactory.createDataStore() }
     
-    // PreferencesManager
+
     single { PreferencesManager(dataStore = get()) }
     
-    // Task Data Source
+
     single { TaskLocalDataSource(dataStore = get()) }
     
-    // Task Repository
+
     single<TaskRepository> { 
         TaskRepositoryImpl(localDataSource = get()) 
     }
     
-    // Splash Repository
+
     single<SplashRepository> { 
         SplashRepositoryImpl(
             remoteDataSource = get(),
@@ -39,7 +36,7 @@ val repositoryModule = module {
         ) 
     }
     
-    // Login Repository
+
     single<LoginRepository> { 
         LoginRepositoryImpl(
             remoteDataSource = get(),

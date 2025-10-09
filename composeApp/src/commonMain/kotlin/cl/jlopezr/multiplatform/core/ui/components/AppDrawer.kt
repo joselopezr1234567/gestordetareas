@@ -33,10 +33,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-/**
- * Drawer de navegación de la aplicación
- * Incluye opciones de navegación y logout
- */
+
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
@@ -70,7 +67,7 @@ fun AppDrawer(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Opciones de navegación
+
             DrawerNavigationItem(
                 icon = Icons.Default.Assignment,
                 label = "Mis Tareas",
@@ -113,7 +110,7 @@ fun AppDrawer(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Opción de logout
+
             DrawerNavigationItem(
                 icon = Icons.Default.ExitToApp,
                 label = "Cerrar Sesión",

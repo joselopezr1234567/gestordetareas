@@ -18,9 +18,7 @@ import cl.jlopezr.multiplatform.feature.settings.presentation.state.SettingsUiSt
 import cl.jlopezr.multiplatform.feature.settings.presentation.viewmodel.SettingsViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Pantalla de configuraciones de la aplicación
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -35,7 +33,7 @@ fun SettingsScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Header
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -56,11 +54,11 @@ fun SettingsScreen(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Settings Content
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Tema
+
             item {
                 SettingsSection(title = "Apariencia") {
                     SettingsItem(
@@ -72,7 +70,7 @@ fun SettingsScreen(
                 }
             }
             
-            // Notificaciones
+
             item {
                 SettingsSection(title = "Notificaciones") {
                     SettingsSwitchItem(
@@ -87,7 +85,7 @@ fun SettingsScreen(
                 }
             }
             
-            // Gestión de tareas
+
             item {
                 SettingsSection(title = "Gestión de Tareas") {
                     Column {
@@ -153,7 +151,7 @@ fun SettingsScreen(
                 }
             }
             
-            // Estadísticas
+
             item {
                 SettingsSection(title = "Información") {
                     SettingsItem(
@@ -165,7 +163,7 @@ fun SettingsScreen(
                 }
             }
             
-            // Datos
+
             item {
                 SettingsSection(title = "Datos") {
                     Column {
@@ -194,7 +192,7 @@ fun SettingsScreen(
                 }
             }
             
-            // Acerca de
+
             item {
                 SettingsSection(title = "Acerca de") {
                     SettingsItem(
@@ -210,7 +208,7 @@ fun SettingsScreen(
         }
     }
     
-    // Dialogs
+
     if (uiState.showThemeDialog) {
         ThemeSelectionDialog(
             currentTheme = uiState.currentTheme,
@@ -238,8 +236,7 @@ fun SettingsScreen(
         )
     }
     
-    // Error handling
-    // TODO: Implement error handling with snackbar
+
 }
 
 @Composable

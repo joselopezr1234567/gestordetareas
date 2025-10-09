@@ -34,10 +34,7 @@ import cl.jlopezr.multiplatform.core.navigation.NavigationState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
-/**
- * Aplicación principal con Clean Architecture
- * Integra Koin para inyección de dependencias y navegación básica
- */
+
 @Composable
 @Preview
 fun App(
@@ -62,10 +59,7 @@ fun App(
     }
 }
 
-/**
- * Navegación principal de la aplicación
- * Maneja la navegación entre todas las pantallas de la aplicación
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppNavigation(
@@ -93,7 +87,7 @@ private fun AppNavigation(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     
-    // Función para alternar el drawer
+
     val toggleDrawer: () -> Unit = {
         scope.launch {
             if (drawerState.isClosed) {
@@ -104,7 +98,7 @@ private fun AppNavigation(
         }
     }
     
-    // Función para manejar navegación desde el drawer
+
     val handleDrawerNavigation: (Screen) -> Unit = { screen ->
         scope.launch {
             drawerState.close()
@@ -112,7 +106,7 @@ private fun AppNavigation(
         }
     }
     
-    // Función para manejar logout
+
     val handleLogout: () -> Unit = {
         scope.launch {
             drawerState.close()
@@ -120,7 +114,7 @@ private fun AppNavigation(
         }
     }
     
-    // Solo mostrar el drawer en pantallas que lo necesiten
+
     val showDrawer = navigationState.currentScreen in listOf(
         Screen.TaskList, 
         Screen.Settings, 
@@ -156,9 +150,7 @@ private fun AppNavigation(
     }
 }
 
-/**
- * Contenido principal de la aplicación
- */
+
 @Composable
 private fun AppContent(
     navigationState: NavigationState,
@@ -254,7 +246,7 @@ private fun AppContent(
                     }
                 )
             } ?: run {
-                // Si no hay taskId, redirigir a TaskList
+
                 LaunchedEffect(Unit) {
                     onNavigationStateChange(navigationState.copy(
                         currentScreen = Screen.TaskList,
@@ -284,7 +276,7 @@ private fun AppContent(
         }
         
         Screen.Logout -> {
-            // El logout se maneja directamente en el drawer, redirigimos a Login
+
             LaunchedEffect(Unit) {
                 onNavigationStateChange(navigationState.copy(currentScreen = Screen.Login))
             }
@@ -292,10 +284,7 @@ private fun AppContent(
     }
 }
 
-/**
- * Pantalla placeholder para Login
- * Se implementará completamente en futuras iteraciones
- */
+
 @Composable
 private fun LoginPlaceholderScreen(
     onNavigateToHome: () -> Unit

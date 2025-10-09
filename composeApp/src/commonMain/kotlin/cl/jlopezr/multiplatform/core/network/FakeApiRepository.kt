@@ -6,17 +6,12 @@ import cl.jlopezr.multiplatform.feature.splash.data.model.SplashConfigDto
 import cl.jlopezr.multiplatform.feature.splash.data.model.VersionCheckDto
 import kotlinx.coroutines.delay
 
-/**
- * Repositorio fake que simula llamadas de API para desarrollo y testing
- * Implementa delays realistas y respuestas mock para todas las features
- */
+
 class FakeApiRepository {
     
     // ========== SPLASH FEATURE ==========
     
-    /**
-     * Simula la obtención de configuración inicial de la aplicación
-     */
+
     suspend fun getSplashConfig(): ApiResponse<SplashConfigDto> {
         return try {
             delay(Constants.NETWORK_DELAY_LONG) // Simula delay de red
@@ -36,14 +31,12 @@ class FakeApiRepository {
         }
     }
     
-    /**
-     * Simula la validación de sesión de usuario
-     */
+
     suspend fun validateUserSession(token: String?): ApiResponse<Boolean> {
         return try {
             delay(Constants.NETWORK_DELAY_MEDIUM)
             
-            // Simula validación de token
+
             val isValid = when {
                 token.isNullOrBlank() -> false
                 token == "valid_token_123" -> true
@@ -57,9 +50,7 @@ class FakeApiRepository {
         }
     }
     
-    /**
-     * Simula la verificación de versión de la aplicación
-     */
+
     suspend fun checkAppVersion(currentVersion: String): ApiResponse<VersionCheckDto> {
         return try {
             delay(Constants.NETWORK_DELAY_SHORT)
@@ -79,16 +70,12 @@ class FakeApiRepository {
         }
     }
     
-    // ========== LOGIN FEATURE (Para futuro uso) ==========
-    
-    /**
-     * Simula login de usuario sin token
-     */
+
     suspend fun login(email: String, password: String): ApiResponse<String> {
         return try {
             delay(Constants.NETWORK_DELAY_MEDIUM)
             
-            // Simula validación de credenciales
+
             val isValidCredentials = email.contains("@") && password.length >= 6
             
             if (isValidCredentials) {
@@ -101,11 +88,7 @@ class FakeApiRepository {
         }
     }
     
-    // ========== HOME FEATURE (Para futuro uso) ==========
-    
-    /**
-     * Simula obtención de datos del home
-     */
+
     suspend fun getHomeData(userId: String): ApiResponse<String> {
         return try {
             delay(Constants.NETWORK_DELAY_MEDIUM)

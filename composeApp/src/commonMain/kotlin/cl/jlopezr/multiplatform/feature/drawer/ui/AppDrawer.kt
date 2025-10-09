@@ -20,9 +20,7 @@ import cl.jlopezr.multiplatform.core.navigation.Screen
 import cl.jlopezr.multiplatform.feature.drawer.presentation.AppDrawerViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Menú lateral de la aplicación
- */
+
 @Composable
 fun AppDrawer(
     currentScreen: Screen,
@@ -33,10 +31,10 @@ fun AppDrawer(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    // Mostrar snackbar de error si hay alguno
+
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let {
-            // Aquí podrías mostrar un snackbar o toast
+
             viewModel.clearError()
         }
     }
@@ -47,12 +45,12 @@ fun AppDrawer(
             .width(280.dp)
             .background(MaterialTheme.colorScheme.surface)
     ) {
-        // Header del drawer
+
         DrawerHeader()
         
         Divider()
         
-        // Items de navegación
+
         LazyColumn(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(vertical = 8.dp)
@@ -75,9 +73,7 @@ fun AppDrawer(
     }
 }
 
-/**
- * Header del drawer con información del usuario
- */
+
 @Composable
 private fun DrawerHeader() {
     Box(
@@ -109,7 +105,7 @@ private fun DrawerHeader() {
             
             Spacer(modifier = Modifier.height(12.dp))
             
-            // Nombre del usuario
+
             Text(
                 text = "Usuario",
                 style = MaterialTheme.typography.titleMedium,
@@ -117,7 +113,7 @@ private fun DrawerHeader() {
                 fontWeight = FontWeight.Bold
             )
             
-            // Email del usuario
+
             Text(
                 text = "usuario@ejemplo.com",
                 style = MaterialTheme.typography.bodyMedium,
@@ -127,9 +123,7 @@ private fun DrawerHeader() {
     }
 }
 
-/**
- * Item individual del drawer
- */
+
 @Composable
 private fun DrawerItem(
     item: DrawerItemData,
@@ -183,18 +177,14 @@ private fun DrawerItem(
     }
 }
 
-/**
- * Datos de un item del drawer
- */
+
 data class DrawerItemData(
     val title: String,
     val icon: ImageVector,
     val screen: Screen
 )
 
-/**
- * Lista de items del drawer
- */
+
 private val drawerItems = listOf(
     DrawerItemData(
         title = "Mis Tareas",
